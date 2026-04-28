@@ -69,6 +69,7 @@ export default function ReceptionFerraillePage() {
     receptionDate: '',
     receptionTime: '',
     weather: '',
+    type: '',
     elementType: '',
     referencePlans: '',
     borderau: '',
@@ -189,6 +190,7 @@ export default function ReceptionFerraillePage() {
           receptionDate: '',
           receptionTime: '',
           weather: '',
+          type: '',
           elementType: '',
           referencePlans: '',
           borderau: '',
@@ -339,6 +341,17 @@ export default function ReceptionFerraillePage() {
                         value={formData.project}
                         onChange={(e) => handleInputChange('project', e.target.value)}
                         placeholder="Nom du projet"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="type">TYPE</Label>
+                      <Input
+                        id="type"
+                        value={formData.type}
+                        onChange={(e) => handleInputChange('type', e.target.value)}
+                        placeholder="Type"
                       />
                     </div>
                   </div>
@@ -547,6 +560,7 @@ export default function ReceptionFerraillePage() {
                   receptionDate: '',
                   receptionTime: '',
                   weather: '',
+                  type: '',
                   elementType: '',
                   referencePlans: '',
                   borderau: '',
