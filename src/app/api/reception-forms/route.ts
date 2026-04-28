@@ -34,6 +34,8 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
+    console.log('Received form data:', JSON.stringify(body, null, 2))
+
     const {
       ficheNumber,
       project,
@@ -80,6 +82,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Create the reception form with all related data
+    console.log('Creating reception form with data:', {
+      ficheNumber,
+      project,
+      elementType,
+      elementTypeOther,
+      hasVerifications: !!verifications,
+      hasSignatures: !!signatures,
+    })
+
     const form = await db.receptionForm.create({
       data: {
         ficheNumber,
@@ -144,10 +155,14 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Error creating reception form:', error)
+    console.error('Error details:', error instanceof Error ? error.message : String(error))
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack')
+
     return NextResponse.json(
       {
         success: false,
         error: 'Failed to create reception form',
+        details: error instanceof Error ? error.message : String(error),
       },
       { status: 500 }
     )

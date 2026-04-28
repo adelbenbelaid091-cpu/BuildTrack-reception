@@ -256,7 +256,9 @@ export default function ReceptionFerraillePage() {
           time: ''
         })))
       } else {
-        toast.error(result.error || 'Erreur lors de la soumission')
+        const errorMessage = result.error || result.details || 'Erreur lors de la soumission'
+        console.error('Form submission error:', errorMessage)
+        toast.error(errorMessage)
       }
     } catch (error) {
       console.error('Error submitting form:', error)
