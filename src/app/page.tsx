@@ -639,27 +639,29 @@ export default function ReceptionFerraillePage() {
                         </Label>
                       </div>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="reservationDeadline">DÉLAI ACCORDÉ POUR LEVÉE DES RÉSERVES</Label>
-                        <Input
-                          id="reservationDeadline"
-                          type="date"
-                          value={formData.reservationDeadline}
-                          onChange={(e) => handleInputChange('reservationDeadline', e.target.value)}
-                          placeholder="jj/mm/aaaa"
-                        />
+                    {(formData.followUpAction === 'Accepté sous réserve de levée des réserves' || formData.followUpAction === 'À corriger avant coulage') && (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="reservationDeadline">DÉLAI ACCORDÉ POUR LEVÉE DES RÉSERVES</Label>
+                          <Input
+                            id="reservationDeadline"
+                            type="date"
+                            value={formData.reservationDeadline}
+                            onChange={(e) => handleInputChange('reservationDeadline', e.target.value)}
+                            placeholder="jj/mm/aaaa"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="reservationResponsible">RESPONSABLE DE LA LEVÉE DES RÉSERVES</Label>
+                          <Input
+                            id="reservationResponsible"
+                            value={formData.reservationResponsible}
+                            onChange={(e) => handleInputChange('reservationResponsible', e.target.value)}
+                            placeholder="Nom du responsable"
+                          />
+                        </div>
                       </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="reservationResponsible">RESPONSABLE DE LA LEVÉE DES RÉSERVES</Label>
-                        <Input
-                          id="reservationResponsible"
-                          value={formData.reservationResponsible}
-                          onChange={(e) => handleInputChange('reservationResponsible', e.target.value)}
-                          placeholder="Nom du responsable"
-                        />
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
