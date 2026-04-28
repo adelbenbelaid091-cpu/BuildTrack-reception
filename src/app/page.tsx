@@ -12,7 +12,6 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { ThemeToggle } from '@/components/theme-toggle'
 import { FileText, Building, MapPin, Calendar, Clock, Cloud, Camera, CheckCircle, XCircle, List, Eye, Trash2, Download, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -253,7 +252,6 @@ export default function ReceptionFerraillePage() {
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <ThemeToggle />
               <Dialog open={showFormsList} onOpenChange={setShowFormsList}>
                 <DialogTrigger asChild>
                   <Button variant="outline" size="default">
