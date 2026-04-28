@@ -77,8 +77,6 @@ export default function ReceptionFerraillePage() {
     planNumber: '',
     planIndex: '',
     observations: '',
-    reserves: '',
-    suites: '',
     followUpAction: '',
     reservationDeadline: '',
     reservationResponsible: ''
@@ -199,8 +197,6 @@ export default function ReceptionFerraillePage() {
           planNumber: '',
           planIndex: '',
           observations: '',
-          reserves: '',
-          suites: '',
           followUpAction: '',
           reservationDeadline: '',
           reservationResponsible: ''
@@ -379,69 +375,6 @@ export default function ReceptionFerraillePage() {
                   </div>
                 </CardContent>
               </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Localisation et Détails</CardTitle>
-                  <CardDescription>Emplacement et détails de la réception</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="block">BLOC</Label>
-                      <Input
-                        id="block"
-                        value={formData.block}
-                        onChange={(e) => handleInputChange('block', e.target.value)}
-                        placeholder="Bloc"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="level">NIVEAU</Label>
-                      <Input
-                        id="level"
-                        value={formData.level}
-                        onChange={(e) => handleInputChange('level', e.target.value)}
-                        placeholder="Niveau"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="location">LOCALISATION</Label>
-                      <Input
-                        id="location"
-                        value={formData.location}
-                        onChange={(e) => handleInputChange('location', e.target.value)}
-                        placeholder="Localisation"
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Type d'Élément</CardTitle>
-                  <CardDescription>Sélectionnez le type d'élément ferraillé</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <Label htmlFor="elementType">TYPE D'ÉLÉMENT</Label>
-                    <select
-                      id="elementType"
-                      value={formData.elementType}
-                      onChange={(e) => handleInputChange('elementType', e.target.value)}
-                      className="flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] md:text-sm disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="">Sélectionner...</option>
-                      {elementTypes.map((type) => (
-                        <option key={type.id} value={type.id}>
-                          {type.label}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           )}
 
@@ -479,54 +412,6 @@ export default function ReceptionFerraillePage() {
                         </div>
                       </div>
                     ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Observations / Réserves</CardTitle>
-                  <CardDescription>Notez vos observations et réserves</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <Label htmlFor="observations">OBSERVATIONS</Label>
-                    <Textarea
-                      id="observations"
-                      value={formData.observations}
-                      onChange={(e) => handleInputChange('observations', e.target.value)}
-                      placeholder="Saisissez vos observations..."
-                      rows={4}
-                    />
-                  </div>
-                  <div className="space-y-2 mt-4">
-                    <Label htmlFor="reserves">RÉSERVES</Label>
-                    <Textarea
-                      id="reserves"
-                      value={formData.reserves}
-                      onChange={(e) => handleInputChange('reserves', e.target.value)}
-                      placeholder="Saisissez vos réserves..."
-                      rows={4}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Suites à Donner</CardTitle>
-                  <CardDescription>Définissez les actions et suites à donner</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    <Label htmlFor="suites">SUITES À DONNER</Label>
-                    <Textarea
-                      id="suites"
-                      value={formData.suites}
-                      onChange={(e) => handleInputChange('suites', e.target.value)}
-                      placeholder="Définissez les suites à donner..."
-                      rows={4}
-                    />
                   </div>
                 </CardContent>
               </Card>
@@ -671,8 +556,6 @@ export default function ReceptionFerraillePage() {
                   planNumber: '',
                   planIndex: '',
                   observations: '',
-                  reserves: '',
-                  suites: '',
                   followUpAction: '',
                   reservationDeadline: '',
                   reservationResponsible: ''
