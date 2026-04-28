@@ -24,7 +24,8 @@ const elementTypes = [
   { id: 'dalle_pleine', label: 'Dalle pleine' },
   { id: 'voile', label: 'Voile' },
   { id: 'escalier', label: 'Escalier' },
-  { id: 'autre', label: 'Autre' }
+  { id: 'autre', label: 'Autre' },
+  { id: 'radier', label: 'Radier' }
 ]
 
 const verificationCriteria = [
