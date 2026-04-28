@@ -498,6 +498,37 @@ export default function ReceptionFerraillePage() {
                                 Conforme
                               </Label>
                             </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`noncompliant-${index}`}
+                                checked={item.isNonCompliant}
+                                onCheckedChange={(checked) =>
+                                  handleVerificationChange(index, 'isNonCompliant', checked as boolean)
+                                }
+                              />
+                              <Label
+                                htmlFor={`noncompliant-${index}`}
+                                className="flex items-center gap-1 cursor-pointer text-sm"
+                              >
+                                <XCircle className="w-4 h-4 text-red-500" />
+                                Non Conforme
+                              </Label>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`notapplicable-${index}`}
+                                checked={item.isNotApplicable}
+                                onCheckedChange={(checked) =>
+                                  handleVerificationChange(index, 'isNotApplicable', checked as boolean)
+                                }
+                              />
+                              <Label
+                                htmlFor={`notapplicable-${index}`}
+                                className="flex items-center gap-1 cursor-pointer text-sm"
+                              >
+                                N/A
+                              </Label>
+                            </div>
                           </div>
                         </div>
                       </div>
