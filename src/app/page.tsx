@@ -76,6 +76,7 @@ export default function ReceptionFerraillePage() {
     planNumber: '',
     planIndex: '',
     observations: '',
+    reserves: '',
     followUpAction: '',
     reservationDeadline: '',
     reservationResponsible: ''
@@ -196,6 +197,7 @@ export default function ReceptionFerraillePage() {
           planNumber: '',
           planIndex: '',
           observations: '',
+          reserves: '',
           followUpAction: '',
           reservationDeadline: '',
           reservationResponsible: ''
@@ -536,6 +538,110 @@ export default function ReceptionFerraillePage() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Observations / Réserves</CardTitle>
+                  <CardDescription>Observations générales et réserves</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="observations">OBSERVATIONS</Label>
+                      <Textarea
+                        id="observations"
+                        value={formData.observations}
+                        onChange={(e) => handleInputChange('observations', e.target.value)}
+                        placeholder="Saisissez vos observations générales ici..."
+                        rows={4}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="reserves">RÉSERVES</Label>
+                      <Textarea
+                        id="reserves"
+                        value={formData.reserves}
+                        onChange={(e) => handleInputChange('reserves', e.target.value)}
+                        placeholder="Saisissez vos réserves ici..."
+                        rows={4}
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Suites à Donner</CardTitle>
+                  <CardDescription>Classification de la réception</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="accepte-sans"
+                          checked={formData.followUpAction === 'Accepté sans réserve'}
+                          onCheckedChange={(checked) =>
+                            handleInputChange('followUpAction', checked ? 'Accepté sans réserve' : '')
+                          }
+                        />
+                        <Label
+                          htmlFor="accepte-sans"
+                          className="flex items-center gap-1 cursor-pointer text-sm"
+                        >
+                          Accepté sans réserve
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="accepte-reserve"
+                          checked={formData.followUpAction === 'Accepté sous réserve de levée des réserves'}
+                          onCheckedChange={(checked) =>
+                            handleInputChange('followUpAction', checked ? 'Accepté sous réserve de levée des réserves' : '')
+                          }
+                        />
+                        <Label
+                          htmlFor="accepte-reserve"
+                          className="flex items-center gap-1 cursor-pointer text-sm"
+                        >
+                          Accepté sous réserve de levée des réserves
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="corriger-avant"
+                          checked={formData.followUpAction === 'À corriger avant coulage'}
+                          onCheckedChange={(checked) =>
+                            handleInputChange('followUpAction', checked ? 'À corriger avant coulage' : '')
+                          }
+                        />
+                        <Label
+                          htmlFor="corriger-avant"
+                          className="flex items-center gap-1 cursor-pointer text-sm"
+                        >
+                          À corriger avant coulage
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          id="refuse-reprendre"
+                          checked={formData.followUpAction === 'Refusé – A reprendre'}
+                          onCheckedChange={(checked) =>
+                            handleInputChange('followUpAction', checked ? 'Refusé – A reprendre' : '')
+                          }
+                        />
+                        <Label
+                          htmlFor="refuse-reprendre"
+                          className="flex items-center gap-1 cursor-pointer text-sm"
+                        >
+                          Refusé – A reprendre
+                        </Label>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
 
@@ -677,6 +783,7 @@ export default function ReceptionFerraillePage() {
                   planNumber: '',
                   planIndex: '',
                   observations: '',
+                  reserves: '',
                   followUpAction: '',
                   reservationDeadline: '',
                   reservationResponsible: ''
