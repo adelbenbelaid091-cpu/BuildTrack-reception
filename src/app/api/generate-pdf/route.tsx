@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     const filename = `Fiche_Reception_${data.ficheNumber || Date.now()}.pdf`
 
     // Return PDF as downloadable file
-    return new NextResponse(buffer, {
+    return new NextResponse(buffer as Uint8Array, {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,
