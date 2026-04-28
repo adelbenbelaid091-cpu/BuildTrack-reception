@@ -136,16 +136,33 @@ export default function ReceptionFerraillePage() {
     setVerifications(newVerifications)
   }
 
-  const handlePhotoUpload = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        const newPhotos = [...photos]
-        newPhotos[index] = reader.result as string
-        setPhotos(newPhotos)
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        const response = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        })
+
+        const result = await response.json()
+
+        if (result.success) {
+          // Store the server path of the uploaded photo
+          const newPhotos = [...photos]
+          newPhotos[index] = `/api/files/${result.data.filename}`
+          setPhotos(newPhotos)
+          toast.success('Photo ajoutée avec succès!')
+        } else {
+          toast.error(result.error || 'Erreur lors du téléchargement')
+        }
+      } catch (error) {
+        console.error('Error uploading photo:', error)
+        toast.error('Erreur lors du téléchargement de la photo')
       }
-      reader.readAsDataURL(file)
     }
   }
 
@@ -751,6 +768,68 @@ export default function ReceptionFerraillePage() {
                       placeholder="Spécifications techniques..."
                       rows={4}
                     />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Camera className="w-5 h-5" />
+                    Photos / Croquis
+                  </CardTitle>
+                  <CardDescription>Ajoutez des photos et des croquis</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {[0, 1, 2, 3].map((index) => (
+                        <div key={index} className="space-y-2">
+                          <Label className="text-sm">Photo {index + 1}</Label>
+                          <div className="relative aspect-video border-2 border-dashed border-slate-300 rounded-lg bg-slate-50 dark:bg-slate-900 dark:border-slate-700 overflow-hidden">
+                            {photos[index] ? (
+                              <div className="relative w-full h-full">
+                                <img
+                                  src={photos[index]}
+                                  alt={`Photo ${index + 1}`}
+                                  className="w-full h-full object-cover"
+                                />
+                                <Button
+                                  type="button"
+                                  variant="destructive"
+                                  size="icon"
+                                  className="absolute top-2 right-2 bg-red-500 hover:bg-red-600"
+                                  onClick={() => {
+                                    const newPhotos = [...photos]
+                                    newPhotos[index] = ''
+                                    setPhotos(newPhotos)
+                                  }}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              </div>
+                            ) : (
+                              <div className="flex items-center justify-center w-full h-full">
+                                <Label
+                                  htmlFor={`photo-${index}`}
+                                  className="flex flex-col items-center justify-center cursor-pointer w-full h-full space-y-2 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                >
+                                  <Camera className="w-8 h-8 text-slate-400" />
+                                  <span className="text-sm text-slate-500">Ajouter</span>
+                                </Label>
+                                <Input
+                                  id={`photo-${index}`}
+                                  type="file"
+                                  accept="image/*"
+                                  className="hidden"
+                                  onChange={(e) => handlePhotoUpload(index, e)}
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
