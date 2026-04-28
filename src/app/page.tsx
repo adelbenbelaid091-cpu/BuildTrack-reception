@@ -373,6 +373,98 @@ export default function ReceptionFerraillePage() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Localisation et Détails</CardTitle>
+                  <CardDescription>Emplacement et informations de réception</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="block">BLOC / ZONE</Label>
+                      <Input
+                        id="block"
+                        value={formData.block}
+                        onChange={(e) => handleInputChange('block', e.target.value)}
+                        placeholder="Bloc"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="level">NIVEAU / ÉTAGE</Label>
+                      <Input
+                        id="level"
+                        value={formData.level}
+                        onChange={(e) => handleInputChange('level', e.target.value)}
+                        placeholder="Niveau"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="location">LOCALISATION (AXES)</Label>
+                      <Input
+                        id="location"
+                        value={formData.location}
+                        onChange={(e) => handleInputChange('location', e.target.value)}
+                        placeholder="Axes"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="receptionDate">DATE DE RÉCEPTION</Label>
+                      <Input
+                        id="receptionDate"
+                        type="date"
+                        value={formData.receptionDate}
+                        onChange={(e) => handleInputChange('receptionDate', e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="receptionTime">HEURE DE RÉCEPTION</Label>
+                      <Input
+                        id="receptionTime"
+                        type="time"
+                        value={formData.receptionTime}
+                        onChange={(e) => handleInputChange('receptionTime', e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="weather">CONDITIONS MÉTÉO</Label>
+                      <Input
+                        id="weather"
+                        value={formData.weather}
+                        onChange={(e) => handleInputChange('weather', e.target.value)}
+                        placeholder="Ensoleillé, Pluvieux, etc."
+                      />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Type d'Élément</CardTitle>
+                  <CardDescription>Sélectionnez le type d'élément inspecté</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <Label htmlFor="elementType">TYPE D'ÉLÉMENT</Label>
+                    <select
+                      id="elementType"
+                      value={formData.elementType}
+                      onChange={(e) => handleInputChange('elementType', e.target.value)}
+                      className="flex h-9 w-full min-w-0 rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs transition-colors outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] md:text-sm disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option value="">Sélectionner...</option>
+                      {elementTypes.map((type) => (
+                        <option key={type.id} value={type.id}>
+                          {type.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
 
