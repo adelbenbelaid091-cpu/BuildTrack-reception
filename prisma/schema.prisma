@@ -56,6 +56,7 @@ model ReceptionForm {
   followUpAction       String?           // SUITES À DONNER
   reservationDeadline  String?           // DÉLAI ACCORDÉ POUR LEVÉE DES RÉSERVES
   reservationResponsible String?         // RESPONSABLE DE LA LEVÉE DES RÉSERVES
+  otherInfo           String?           // AUTRES INFORMATIONS
   status               String            @default("brouillon") // brouillon, soumis, accepté, refusé
   createdAt            DateTime          @default(now())
   updatedAt            DateTime          @updatedAt

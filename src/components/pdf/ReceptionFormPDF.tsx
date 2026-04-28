@@ -259,6 +259,12 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
               <Text style={styles.label}>CONDITIONS MÉTÉO</Text>
               <Text style={styles.value}>{data.weather || '-'}</Text>
             </View>
+            {data.otherInfo && (
+              <View style={styles.gridItem}>
+                <Text style={styles.label}>AUTRE</Text>
+                <Text style={styles.value}>{data.otherInfo}</Text>
+              </View>
+            )}
           </View>
         </View>
 

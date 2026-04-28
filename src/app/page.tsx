@@ -87,7 +87,8 @@ export default function ReceptionFerraillePage() {
     observations: '',
     followUpAction: '',
     reservationDeadline: '',
-    reservationResponsible: ''
+    reservationResponsible: '',
+    otherInfo: ''
   })
 
   const [verifications, setVerifications] = useState(
@@ -320,7 +321,8 @@ export default function ReceptionFerraillePage() {
           observations: '',
           followUpAction: '',
           reservationDeadline: '',
-          reservationResponsible: ''
+          reservationResponsible: '',
+          otherInfo: ''
         })
         setVerifications(verificationCriteria.map(criteria => ({
           criteria,
@@ -642,6 +644,25 @@ export default function ReceptionFerraillePage() {
                         </Label>
                       </div>
                     ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Autre</CardTitle>
+                  <CardDescription>Informations supplémentaires</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <Label htmlFor="otherInfo">Autres Informations</Label>
+                    <Textarea
+                      id="otherInfo"
+                      value={formData.otherInfo}
+                      onChange={(e) => handleInputChange('otherInfo', e.target.value)}
+                      placeholder="Saisissez d'autres informations ou observations..."
+                      rows={4}
+                    />
                   </div>
                 </CardContent>
               </Card>
@@ -1042,7 +1063,8 @@ export default function ReceptionFerraillePage() {
                   observations: '',
                   followUpAction: '',
                   reservationDeadline: '',
-                  reservationResponsible: ''
+                  reservationResponsible: '',
+                  otherInfo: ''
                 })
                 setVerifications(verificationCriteria.map(criteria => ({
                   criteria,
@@ -1123,6 +1145,7 @@ export default function ReceptionFerraillePage() {
                     <p><strong>Date:</strong> {viewingForm.receptionDate}</p>
                     <p><strong>Heure:</strong> {viewingForm.receptionTime}</p>
                     <p><strong>Météo:</strong> {viewingForm.weather}</p>
+                    {viewingForm.otherInfo && <p><strong>Autre:</strong> {viewingForm.otherInfo}</p>}
                   </CardContent>
                 </Card>
 
