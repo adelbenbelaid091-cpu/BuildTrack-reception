@@ -686,17 +686,61 @@ export default function ReceptionFerraillePage() {
             <div className="space-y-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Références</CardTitle>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="w-5 h-5" />
+                    Références
+                  </CardTitle>
                   <CardDescription>Documents de référence et spécifications</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="referencePlans">PLANS DE RÉFÉRENCE</Label>
+                      <Input
+                        id="referencePlans"
+                        value={formData.referencePlans}
+                        onChange={(e) => handleInputChange('referencePlans', e.target.value)}
+                        placeholder="Plans de référence"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="borderau">BON DE LIVRAISON N°</Label>
+                      <Input
+                        id="borderau"
+                        value={formData.borderau}
+                        onChange={(e) => handleInputChange('borderau', e.target.value)}
+                        placeholder="Numéro de bon de livraison"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="planNumber">N° PLAN</Label>
+                      <Input
+                        id="planNumber"
+                        value={formData.planNumber}
+                        onChange={(e) => handleInputChange('planNumber', e.target.value)}
+                        placeholder="Numéro de plan"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="planIndex">INDICE PLAN</Label>
+                      <Input
+                        id="planIndex"
+                        value={formData.planIndex}
+                        onChange={(e) => handleInputChange('planIndex', e.target.value)}
+                        placeholder="Indice de plan"
+                      />
+                    </div>
+                  </div>
                   <div className="space-y-2">
-                    <Label htmlFor="referencePlans">PLANS DE RÉFÉRENCE</Label>
-                    <Input
-                      id="referencePlans"
-                      value={formData.referencePlans}
-                      onChange={(e) => handleInputChange('referencePlans', e.target.value)}
-                      placeholder="Plans de référence"
+                    <Label htmlFor="specifications">SPÉCIFICATIONS</Label>
+                    <Textarea
+                      id="specifications"
+                      value={formData.specifications}
+                      onChange={(e) => handleInputChange('specifications', e.target.value)}
+                      placeholder="Spécifications techniques..."
+                      rows={4}
                     />
                   </div>
                 </CardContent>
