@@ -162,6 +162,7 @@ export default function ReceptionFerraillePage() {
     }
 
     try {
+      setIsGeneratingPDF(true)
       const fullFormData = {
         ...formData,
         verifications,
@@ -169,6 +170,7 @@ export default function ReceptionFerraillePage() {
         signatures
       }
 
+      // Save to database first
       const response = await fetch('/api/reception-forms', {
         method: 'POST',
         headers: {
@@ -181,6 +183,38 @@ export default function ReceptionFerraillePage() {
 
       if (result.success) {
         toast.success('Formulaire soumis avec succès!')
+
+        // Generate and download PDF
+        try {
+          const pdfResponse = await fetch('/api/generate-pdf', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ data: fullFormData }),
+          })
+
+          if (pdfResponse.ok) {
+            const blob = await pdfResponse.blob()
+            const url = window.URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = url
+            a.download = `Fiche_Reception_${formData.ficheNumber}.pdf`
+            document.body.appendChild(a)
+            a.click()
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+            toast.success('PDF généré avec succès!')
+          } else {
+            toast.error('Erreur lors de la génération du PDF')
+          }
+        } catch (pdfError) {
+          console.error('Error generating PDF:', pdfError)
+          toast.error('Erreur lors de la génération du PDF')
+        }
+
+        // Reset form
         setFormData({
           ficheNumber: '',
           project: '',
@@ -227,6 +261,8 @@ export default function ReceptionFerraillePage() {
     } catch (error) {
       console.error('Error submitting form:', error)
       toast.error('Erreur lors de la soumission du formulaire')
+    } finally {
+      setIsGeneratingPDF(false)
     }
   }
 
@@ -863,10 +899,18 @@ export default function ReceptionFerraillePage() {
             </Button>
             <Button
               onClick={handleSubmit}
+              disabled={isGeneratingPDF}
               className="bg-orange-500 hover:bg-orange-600 text-white font-semibold"
               size="lg"
             >
-              Soumettre le Formulaire
+              {isGeneratingPDF ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Génération en cours...
+                </>
+              ) : (
+                'Soumettre le Formulaire'
+              )}
             </Button>
           </div>
         </div>

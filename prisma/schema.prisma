@@ -47,12 +47,14 @@ model ReceptionForm {
   receptionTime        String?           // HEURE DE RÉCEPTION
   weather              String?           // CONDITIONS MÉTÉO
   elementType          String?           // TYPE D'ÉLÉMENT
+  elementTypeOther     String?           // AUTRE (PRÉCISER)
   referencePlans       String?           // PLANS DE RÉFÉRENCE
   borderau             String?           // BORDEREAU DE FERRAILLAGE
   specifications       String?           // SPÉCIFICATIONS APPLICABLES
   planNumber           String?           // N° PLAN
   planIndex            String?           // INDICE
-  observations         String?           // OBSERVATIONS / RÉSERVES
+  observations         String?           // OBSERVATIONS
+  reserves             String?           // RÉSERVES
   followUpAction       String?           // SUITES À DONNER
   reservationDeadline  String?           // DÉLAI ACCORDÉ POUR LEVÉE DES RÉSERVES
   reservationResponsible String?         // RESPONSABLE DE LA LEVÉE DES RÉSERVES

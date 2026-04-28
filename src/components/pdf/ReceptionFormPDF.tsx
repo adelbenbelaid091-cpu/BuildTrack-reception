@@ -189,6 +189,15 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
     voile: 'Voile',
     escalier: 'Escalier',
     autre: 'Autre',
+    radier: 'Radier',
+  }
+
+  const getElementTypeLabel = () => {
+    if (!data.elementType) return '-'
+    if (data.elementType === 'autre' && data.elementTypeOther) {
+      return `Autre: ${data.elementTypeOther}`
+    }
+    return elementTypes[data.elementType] || data.elementType
   }
 
   return (
@@ -226,7 +235,7 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
             </View>
             <View style={styles.gridItem}>
               <Text style={styles.label}>TYPE D'ÉLÉMENT</Text>
-              <Text style={styles.value}>{data.elementType ? elementTypes[data.elementType] || data.elementType : '-'}</Text>
+              <Text style={styles.value}>{getElementTypeLabel()}</Text>
             </View>
           </View>
         </View>
@@ -357,8 +366,14 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
           <Text style={styles.sectionTitle}>OBSERVATIONS & SUITES À DONNER</Text>
           {data.observations && (
             <View style={{ marginBottom: 10 }}>
-              <Text style={styles.label}>Observations / Réserves</Text>
+              <Text style={styles.label}>Observations</Text>
               <Text style={styles.value}>{data.observations}</Text>
+            </View>
+          )}
+          {data.reserves && (
+            <View style={{ marginBottom: 10 }}>
+              <Text style={styles.label}>Réserves</Text>
+              <Text style={styles.value}>{data.reserves}</Text>
             </View>
           )}
           <View style={{ marginBottom: 10 }}>
