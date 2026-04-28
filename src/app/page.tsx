@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { FileText, Building, MapPin, Calendar, Clock, Cloud, Camera, CheckCircle, XCircle, List, Eye, Trash2 } from 'lucide-react'
+import { FileText, Building, MapPin, Calendar, Clock, Cloud, Camera, CheckCircle, XCircle, List, Eye, Trash2, Download, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 
 const elementTypes = [
@@ -65,6 +65,7 @@ export default function ReceptionFerraillePage() {
   const [showFormsList, setShowFormsList] = useState(false)
   const [formsList, setFormsList] = useState<ReceptionForm[]>([])
   const [viewingForm, setViewingForm] = useState<any>(null)
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
   const [formData, setFormData] = useState({
     ficheNumber: '',
     project: '',
@@ -221,6 +222,53 @@ export default function ReceptionFerraillePage() {
     }
   }
 
+  const downloadPDF = async (form: any) => {
+    setIsGeneratingPDF(true)
+    try {
+      // If we don't have full data, fetch it first
+      let fullFormData = form
+      if (!form.verifications) {
+        const response = await fetch(`/api/reception-forms/${form.id}`)
+        const result = await response.json()
+        if (result.success) {
+          fullFormData = result.data
+        } else {
+          toast.error('Erreur lors de la récupération des données')
+          setIsGeneratingPDF(false)
+          return
+        }
+      }
+
+      const response = await fetch('/api/generate-pdf', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ data: fullFormData }),
+      })
+
+      if (response.ok) {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `Fiche_Reception_${fullFormData.ficheNumber || Date.now()}.pdf`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        window.URL.revokeObjectURL(url)
+        toast.success('PDF téléchargé avec succès')
+      } else {
+        toast.error('Erreur lors de la génération du PDF')
+      }
+    } catch (error) {
+      console.error('Error downloading PDF:', error)
+      toast.error('Erreur lors du téléchargement du PDF')
+    } finally {
+      setIsGeneratingPDF(false)
+    }
+  }
+
   const handleSubmit = async () => {
     // Form validation
     if (!formData.ficheNumber) {
@@ -367,13 +415,24 @@ export default function ReceptionFerraillePage() {
                                   onClick={() => {
                                     viewForm(form.id)
                                   }}
+                                  title="Voir les détails"
                                 >
                                   <Eye className="w-4 h-4" />
                                 </Button>
                                 <Button
                                   variant="ghost"
                                   size="sm"
+                                  onClick={() => downloadPDF(form)}
+                                  disabled={isGeneratingPDF}
+                                  title="Télécharger PDF"
+                                >
+                                  <Download className="w-4 h-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
                                   onClick={() => deleteForm(form.id)}
+                                  title="Supprimer"
                                 >
                                   <Trash2 className="w-4 h-4 text-red-500" />
                                 </Button>
@@ -977,7 +1036,29 @@ export default function ReceptionFerraillePage() {
       <Dialog open={!!viewingForm} onOpenChange={(open) => !open && setViewingForm(null)}>
         <DialogContent className="max-w-6xl max-h-[90vh]">
           <DialogHeader>
-            <DialogTitle>Détails du Formulaire</DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle>Détails du Formulaire</DialogTitle>
+              {viewingForm && (
+                <Button
+                  onClick={() => downloadPDF(viewingForm)}
+                  disabled={isGeneratingPDF}
+                  variant="outline"
+                  size="sm"
+                >
+                  {isGeneratingPDF ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Génération...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4 mr-2" />
+                      Télécharger PDF
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
           </DialogHeader>
           <ScrollArea className="h-[700px]">
             {viewingForm && (
