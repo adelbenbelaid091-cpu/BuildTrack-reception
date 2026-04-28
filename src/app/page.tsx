@@ -233,9 +233,9 @@ export default function ReceptionFerraillePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
+      <header className="bg-white border-b border-slate-200 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -243,10 +243,10 @@ export default function ReceptionFerraillePage() {
                 <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-lg md:text-xl font-semibold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
+                <h1 className="text-lg md:text-xl font-semibold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
                   Fichier de Réception Ferraillages
                 </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">
+                <p className="text-xs text-slate-500 font-medium tracking-wide">
                   Contrôle Qualité
                 </p>
               </div>
@@ -499,7 +499,7 @@ export default function ReceptionFerraillePage() {
       </main>
 
       {/* Fixed Bottom Tabs */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-lg z-50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-50">
         <div className="container mx-auto px-4">
           {/* Tabs Navigation */}
           <Tabs defaultValue="general" value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -532,7 +532,7 @@ export default function ReceptionFerraillePage() {
           </Tabs>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-4 border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
+          <div className="flex items-center gap-4 border-t border-slate-200 pt-4 mt-4">
             <Button
               onClick={() => {
                 setFormData({
