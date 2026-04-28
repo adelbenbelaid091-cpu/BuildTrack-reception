@@ -354,18 +354,18 @@ export default function ReceptionFerraillePage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex flex-col">
       {/* Header */}
       <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="bg-orange-500 p-3 rounded-lg">
-                <FileText className="w-8 h-8 text-white" />
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2.5 rounded-lg shadow-lg shadow-orange-500/20">
+                <FileText className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">
-                  Fiche de Réception Ferraille
+                <h1 className="text-lg md:text-xl font-semibold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-200 bg-clip-text text-transparent">
+                  Fichier de Réception Ferraillages
                 </h1>
-                <p className="text-sm text-slate-600 dark:text-slate-400">
-                  Formulaire de contrôle qualité
+                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">
+                  Contrôle Qualité
                 </p>
               </div>
             </div>

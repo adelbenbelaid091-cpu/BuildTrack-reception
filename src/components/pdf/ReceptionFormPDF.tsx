@@ -19,20 +19,21 @@ const styles = StyleSheet.create({
     lineHeight: 1.5,
   },
   header: {
-    marginBottom: 20,
+    marginBottom: 15,
     borderBottomWidth: 2,
     borderBottomColor: '#f97316',
-    paddingBottom: 10,
+    paddingBottom: 8,
   },
   title: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
+    marginBottom: 4,
     color: '#1e293b',
   },
   subtitle: {
-    fontSize: 12,
+    fontSize: 9,
     color: '#64748b',
+    letterSpacing: 0.5,
   },
   section: {
     marginBottom: 20,
@@ -195,8 +196,8 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>FICHE DE RÉCEPTION FERRAILLAGE</Text>
-          <Text style={styles.subtitle}>Formulaire de Contrôle Qualité</Text>
+          <Text style={styles.title}>FICHIER DE RÉCEPTION FERRAILLAGES</Text>
+          <Text style={styles.subtitle}>Contrôle Qualité</Text>
           <View style={{ marginTop: 10, flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={styles.boldText}>N°: {data.ficheNumber || 'N/A'}</Text>
             <Text style={styles.boldText}>Statut: {data.status || 'N/A'}</Text>
