@@ -342,21 +342,24 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
         </View>
 
         {/* Photos */}
-        {data.photos && data.photos.length > 0 && (
+        {data.photos && data.photos.length > 0 && data.photos.some((p: any) => p) && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>PHOTOS</Text>
             <View style={styles.photoGrid}>
-              {data.photos.map((photo: any, index: number) => (
-                <View key={index} style={styles.photoItem}>
-                  {photo.path && (
-                    // eslint-disable-next-line jsx-a11y/alt-text
+              {data.photos.map((photo: any, index: number) => {
+                if (!photo) return null
+                // Handle both string paths and object with path property
+                const photoPath = typeof photo === 'string' ? photo : photo.path
+                return (
+                  <View key={index} style={styles.photoItem}>
+                    {/* eslint-disable-next-line jsx-a11y/alt-text */}
                     <Image
-                      src={photo.path.startsWith('data:') ? photo.path : `http://localhost:3000${photo.path}`}
+                      src={photoPath.startsWith('data:') ? photoPath : `http://localhost:3000${photoPath}`}
                       style={styles.photo}
                     />
-                  )}
-                </View>
-              ))}
+                  </View>
+                )
+              })}
             </View>
           </View>
         )}
