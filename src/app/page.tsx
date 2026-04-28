@@ -71,6 +71,7 @@ export default function ReceptionFerraillePage() {
     project: '',
     company: '',
     client: '',
+    bureauEtude: '',
     block: '',
     level: '',
     location: '',
@@ -303,6 +304,7 @@ export default function ReceptionFerraillePage() {
           project: '',
           company: '',
           client: '',
+          bureauEtude: '',
           block: '',
           level: '',
           location: '',
@@ -506,7 +508,7 @@ export default function ReceptionFerraillePage() {
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="company">ENTREPRISE</Label>
                       <Input
@@ -523,6 +525,15 @@ export default function ReceptionFerraillePage() {
                         value={formData.client}
                         onChange={(e) => handleInputChange('client', e.target.value)}
                         placeholder="Maître d'œuvre"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="bureauEtude">BUREAU D'ÉTUDE</Label>
+                      <Input
+                        id="bureauEtude"
+                        value={formData.bureauEtude}
+                        onChange={(e) => handleInputChange('bureauEtude', e.target.value)}
+                        placeholder="Bureau d'étude"
                       />
                     </div>
                   </div>
@@ -982,6 +993,7 @@ export default function ReceptionFerraillePage() {
                   project: '',
                   company: '',
                   client: '',
+                  bureauEtude: '',
                   block: '',
                   level: '',
                   location: '',
@@ -1082,6 +1094,18 @@ export default function ReceptionFerraillePage() {
                       </Badge>
                     </div>
                   </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div>
+                        <p className="text-sm font-semibold">Maître d'Oeuvre</p>
+                        <p className="text-slate-600">{viewingForm.client || '-'}</p>
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold">Bureau d'Étude</p>
+                        <p className="text-slate-600">{viewingForm.bureauEtude || '-'}</p>
+                      </div>
+                    </div>
+                  </CardContent>
                 </Card>
 
                 {/* Location Details */}

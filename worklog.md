@@ -99,6 +99,40 @@ Stage Summary:
 - PDF generation is server-side (uses z-ai-web-dev-sdk compatible backend approach)
 
 ---
+Task ID: 4
+Agent: Z.ai Code
+Task: Add "Bureau d'étude" field to project information
+
+Work Log:
+- Added bureauEtude field to Prisma ReceptionForm model
+- Ran `bun run db:push` to update database schema
+- Updated frontend formData state to include bureauEtude field
+- Added Bureau d'étude input field in "Informations du Projet" card
+  * Changed grid from md:grid-cols-2 to md:grid-cols-3
+  * Added input with label "BUREAU D'ÉTUDE" and placeholder "Bureau d'étude"
+- Updated form reset functions to include bureauEtude field (after submission and on reset button)
+- Added Bureau d'étude display in PDF component "INFORMATIONS DU PROJET" section
+  * Added new grid item after MAÎTRE D'ŒUVRE
+  * Displays bureauEtude value or '-' if empty
+- Enhanced view dialog to show project details:
+  * Added CardContent to Header Info card
+  * Added grid with Maître d'Oeuvre and Bureau d'Étude fields
+  * Responsive layout: grid-cols-2 on mobile, md:grid-cols-4 on desktop
+- Verified ESLint compliance - all checks pass
+- Application compiled successfully with new field
+
+Stage Summary:
+- Successfully added "Bureau d'étude" field to the application
+- Database schema updated with bureauEtude column in ReceptionForm table
+- Frontend form now includes Bureau d'étude input field
+  * Positioned after MAÎTRE D'ŒUVRE in a 3-column layout on desktop
+  * Properly integrated with form state management
+- PDF generation includes Bureau d'étude in project information section
+- View dialog displays Bureau d'étude information alongside Maître d'Oeuvre
+- All form reset functions include the new field
+- Code quality maintained with full ESLint compliance
+
+---
 Task ID: 3
 Agent: Z.ai Code
 Task: Update title to "Fichier de Réception Ferraillages" with smaller stylish design

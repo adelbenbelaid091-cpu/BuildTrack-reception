@@ -221,6 +221,10 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
               <Text style={styles.value}>{data.client || '-'}</Text>
             </View>
             <View style={styles.gridItem}>
+              <Text style={styles.label}>BUREAU D'ÉTUDE</Text>
+              <Text style={styles.value}>{data.bureauEtude || '-'}</Text>
+            </View>
+            <View style={styles.gridItem}>
               <Text style={styles.label}>TYPE D'ÉLÉMENT</Text>
               <Text style={styles.value}>{data.elementType ? elementTypes[data.elementType] || data.elementType : '-'}</Text>
             </View>

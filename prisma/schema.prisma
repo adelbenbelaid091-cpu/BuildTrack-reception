@@ -39,6 +39,7 @@ model ReceptionForm {
   project              String?
   company              String?           // ENTREPRISE
   client               String?           // MAÎTRE D'ŒUVRE
+  bureauEtude          String?           // BUREAU D'ÉTUDE
   block                String?           // BLOC / ZONE
   level                String?           // NIVEAU / ÉTAGE
   location             String?           // LOCALISATION (AXES)
