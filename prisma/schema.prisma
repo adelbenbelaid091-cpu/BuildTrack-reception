@@ -38,7 +38,7 @@ model ReceptionForm {
   ficheNumber          String?           @unique
   project              String?
   company              String?           // ENTREPRISE
-  client               String?           // MAÎTRE D'ŒUVRE
+  client               String?           // MAÎTRE D'OUVRAGE
   bureauEtude          String?           // BUREAU D'ÉTUDE
   block                String?           // BLOC / ZONE
   level                String?           // NIVEAU / ÉTAGE
@@ -85,7 +85,7 @@ model VerificationItem {
 model Signature {
   id              String   @id @default(cuid())
   receptionFormId String
-  role            String   // ENTREPRISE, MAÎTRE D'ŒUVRE, MAÎTRE D'OUVRAGE, BUREAU DE CONTRÔLE
+  role            String   // ENTREPRISE, MAÎTRE D'OUVRAGE, MAÎTRE D'OUVRAGE, BUREAU DE CONTRÔLE
   name            String?
   function        String?  // Fonction
   date            String?

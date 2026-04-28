@@ -226,7 +226,7 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
               <Text style={styles.value}>{data.company || '-'}</Text>
             </View>
             <View style={styles.gridItem}>
-              <Text style={styles.label}>MAÎTRE D'ŒUVRE</Text>
+              <Text style={styles.label}>MAÎTRE D'OUVRAGE</Text>
               <Text style={styles.value}>{data.client || '-'}</Text>
             </View>
             <View style={styles.gridItem}>

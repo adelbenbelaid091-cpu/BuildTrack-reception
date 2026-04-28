@@ -49,7 +49,7 @@ const followUpActions = [
 
 const signatureRoles = [
   'ENTREPRISE',
-  'MAÎTRE D\'ŒUVRE / BET',
+  'MAÎTRE D\'OUVRAGE / BET',
   'MAÎTRE D\'OUVRAGE',
   'BUREAU DE CONTRÔLE (si applicable)'
 ]
@@ -398,7 +398,7 @@ export default function ReceptionFerraillePage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="client">MAÎTRE D'ŒUVRE</Label>
+                      <Label htmlFor="client">MAÎTRE D'OUVRAGE</Label>
                       <Input
                         id="client"
                         value={formData.client}
