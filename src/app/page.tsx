@@ -71,6 +71,7 @@ export default function ReceptionFerraillePage() {
     receptionTime: '',
     weather: '',
     elementType: '',
+    elementTypeOther: '',
     referencePlans: '',
     borderau: '',
     specifications: '',
@@ -192,6 +193,7 @@ export default function ReceptionFerraillePage() {
           receptionTime: '',
           weather: '',
           elementType: '',
+          elementTypeOther: '',
           referencePlans: '',
           borderau: '',
           specifications: '',
@@ -465,6 +467,17 @@ export default function ReceptionFerraillePage() {
                         </option>
                       ))}
                     </select>
+                    {formData.elementType === 'autre' && (
+                      <div className="space-y-2 mt-2">
+                        <Label htmlFor="elementTypeOther">AUTRE (PRÉCISER)</Label>
+                        <Input
+                          id="elementTypeOther"
+                          value={formData.elementTypeOther}
+                          onChange={(e) => handleInputChange('elementTypeOther', e.target.value)}
+                          placeholder="Ex: autre radier, autre dalle, autre manuel..."
+                        />
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -801,6 +814,7 @@ export default function ReceptionFerraillePage() {
                   receptionTime: '',
                   weather: '',
                   elementType: '',
+                  elementTypeOther: '',
                   referencePlans: '',
                   borderau: '',
                   specifications: '',
