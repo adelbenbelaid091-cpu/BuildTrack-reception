@@ -77,6 +77,8 @@ export default function ReceptionFerraillePage() {
     planNumber: '',
     planIndex: '',
     observations: '',
+    reserves: '',
+    suites: '',
     followUpAction: '',
     reservationDeadline: '',
     reservationResponsible: ''
@@ -197,6 +199,8 @@ export default function ReceptionFerraillePage() {
           planNumber: '',
           planIndex: '',
           observations: '',
+          reserves: '',
+          suites: '',
           followUpAction: '',
           reservationDeadline: '',
           reservationResponsible: ''
@@ -478,6 +482,54 @@ export default function ReceptionFerraillePage() {
                   </div>
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Observations / Réserves</CardTitle>
+                  <CardDescription>Notez vos observations et réserves</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <Label htmlFor="observations">OBSERVATIONS</Label>
+                    <Textarea
+                      id="observations"
+                      value={formData.observations}
+                      onChange={(e) => handleInputChange('observations', e.target.value)}
+                      placeholder="Saisissez vos observations..."
+                      rows={4}
+                    />
+                  </div>
+                  <div className="space-y-2 mt-4">
+                    <Label htmlFor="reserves">RÉSERVES</Label>
+                    <Textarea
+                      id="reserves"
+                      value={formData.reserves}
+                      onChange={(e) => handleInputChange('reserves', e.target.value)}
+                      placeholder="Saisissez vos réserves..."
+                      rows={4}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Suites à Donner</CardTitle>
+                  <CardDescription>Définissez les actions et suites à donner</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <Label htmlFor="suites">SUITES À DONNER</Label>
+                    <Textarea
+                      id="suites"
+                      value={formData.suites}
+                      onChange={(e) => handleInputChange('suites', e.target.value)}
+                      placeholder="Définissez les suites à donner..."
+                      rows={4}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
 
@@ -619,6 +671,8 @@ export default function ReceptionFerraillePage() {
                   planNumber: '',
                   planIndex: '',
                   observations: '',
+                  reserves: '',
+                  suites: '',
                   followUpAction: '',
                   reservationDeadline: '',
                   reservationResponsible: ''
