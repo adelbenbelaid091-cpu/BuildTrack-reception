@@ -347,6 +347,9 @@ export default function ReceptionFerraillePage() {
   }
 
   const generateFicheNumber = () => {
+    // Only generate on client-side to avoid hydration mismatch
+    if (typeof window === 'undefined') return
+
     const date = new Date()
     const num = `FR-${date.getFullYear()}${(date.getMonth() + 1).toString().padStart(2, '0')}${date.getDate().toString().padStart(2, '0')}-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`
     handleInputChange('ficheNumber', num)
