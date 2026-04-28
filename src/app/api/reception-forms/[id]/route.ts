@@ -3,11 +3,13 @@ import { db } from '@/lib/db'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+
     const form = await db.receptionForm.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         verifications: true,
         signatures: true,
@@ -43,9 +45,11 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+
     const body = await request.json()
 
     const {
@@ -53,6 +57,7 @@ export async function PUT(
       project,
       company,
       client,
+      bureauEtude,
       block,
       level,
       location,
@@ -80,7 +85,7 @@ export async function PUT(
       const existing = await db.receptionForm.findFirst({
         where: {
           ficheNumber,
-          NOT: { id: params.id },
+          NOT: { id },
         },
       })
       if (existing) {
@@ -96,12 +101,13 @@ export async function PUT(
 
     // Update the reception form
     const form = await db.receptionForm.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ficheNumber,
         project,
         company,
         client,
+        bureauEtude,
         block,
         level,
         location,
@@ -131,12 +137,12 @@ export async function PUT(
     if (verifications) {
       // Delete existing verifications
       await db.verificationItem.deleteMany({
-        where: { receptionFormId: params.id },
+        where: { receptionFormId: id },
       })
       // Create new verifications
       await db.verificationItem.createMany({
         data: verifications.map((v: any) => ({
-          receptionFormId: params.id,
+          receptionFormId: id,
           criteria: v.criteria,
           isCompliant: v.isCompliant,
           isNonCompliant: v.isNonCompliant,
@@ -149,12 +155,12 @@ export async function PUT(
     if (signatures) {
       // Delete existing signatures
       await db.signature.deleteMany({
-        where: { receptionFormId: params.id },
+        where: { receptionFormId: id },
       })
       // Create new signatures
       await db.signature.createMany({
         data: signatures.map((s: any) => ({
-          receptionFormId: params.id,
+          receptionFormId: id,
           role: s.role,
           name: s.name,
           function: s.function,
@@ -167,12 +173,12 @@ export async function PUT(
     if (photos) {
       // Delete existing photos
       await db.photo.deleteMany({
-        where: { receptionFormId: params.id },
+        where: { receptionFormId: id },
       })
       // Create new photos
       await db.photo.createMany({
         data: photos.map((p: string, index: number) => ({
-          receptionFormId: params.id,
+          receptionFormId: id,
           path: p,
           index: index + 1,
         })),
@@ -181,7 +187,7 @@ export async function PUT(
 
     // Fetch updated form with all relations
     const updatedForm = await db.receptionForm.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: {
         verifications: true,
         signatures: true,
@@ -207,11 +213,13 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
+
     await db.receptionForm.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({
