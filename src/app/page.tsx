@@ -355,6 +355,8 @@ export default function ReceptionFerraillePage() {
     handleInputChange('ficheNumber', num)
   }
 
+  const [activeTab, setActiveTab] = useState('general')
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex flex-col">
       {/* Header */}
@@ -460,17 +462,10 @@ export default function ReceptionFerraillePage() {
 
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-4 py-8">
-        <ScrollArea className="h-[calc(100vh-200px)]">
-          <Tabs defaultValue="general" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:w-[600px]">
-              <TabsTrigger value="general">Général</TabsTrigger>
-              <TabsTrigger value="verifications">Vérifications</TabsTrigger>
-              <TabsTrigger value="documents">Documents</TabsTrigger>
-              <TabsTrigger value="signatures">Signatures</TabsTrigger>
-            </TabsList>
-
-            {/* General Information Tab */}
-            <TabsContent value="general" className="space-y-6">
+        <ScrollArea className="h-[calc(100vh-350px)]">
+          {activeTab === 'general' && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
+              {/* General Information */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -650,10 +645,11 @@ export default function ReceptionFerraillePage() {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
+            </div>
+          )}
 
-            {/* Verifications Tab */}
-            <TabsContent value="verifications" className="space-y-6">
+          {activeTab === 'verifications' && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
               <Card>
                 <CardHeader>
                   <CardTitle>Vérifications de Conformité</CardTitle>
@@ -803,10 +799,11 @@ export default function ReceptionFerraillePage() {
                   )}
                 </CardContent>
               </Card>
-            </TabsContent>
+            </div>
+          )}
 
-            {/* Documents Tab */}
-            <TabsContent value="documents" className="space-y-6">
+          {activeTab === 'documents' && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
               <Card>
                 <CardHeader>
                   <CardTitle>Références</CardTitle>
@@ -924,10 +921,11 @@ export default function ReceptionFerraillePage() {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
+            </div>
+          )}
 
-            {/* Signatures Tab */}
-            <TabsContent value="signatures" className="space-y-6">
+          {activeTab === 'signatures' && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-300">
               <Card>
                 <CardHeader>
                   <CardTitle>Signatures</CardTitle>
@@ -981,15 +979,47 @@ export default function ReceptionFerraillePage() {
                   </div>
                 </CardContent>
               </Card>
-            </TabsContent>
-          </Tabs>
+            </div>
+          )}
         </ScrollArea>
+      </main>
 
-        {/* Submit Button */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 p-4 z-10">
-          <div className="container mx-auto flex justify-end gap-3">
+      {/* Fixed Bottom Tabs */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700 shadow-lg z-50">
+        <div className="container mx-auto px-4">
+          {/* Tabs Navigation */}
+          <Tabs defaultValue="general" value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-4 h-16 bg-transparent border-0">
+              <TabsTrigger 
+                value="general"
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200"
+              >
+                Général
+              </TabsTrigger>
+              <TabsTrigger 
+                value="verifications"
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200"
+              >
+                Vérifications
+              </TabsTrigger>
+              <TabsTrigger 
+                value="documents"
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200"
+              >
+                Documents
+              </TabsTrigger>
+              <TabsTrigger 
+                value="signatures"
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200"
+              >
+                Signatures
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-4 border-t border-slate-200 dark:border-slate-700 pt-4 mt-4">
             <Button
-              variant="outline"
               onClick={() => {
                 setFormData({
                   ficheNumber: '',
@@ -1030,22 +1060,20 @@ export default function ReceptionFerraillePage() {
                   time: ''
                 })))
               }}
+              variant="outline"
             >
               Réinitialiser
             </Button>
             <Button
               onClick={handleSubmit}
-              className="bg-orange-500 hover:bg-orange-600"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold"
               size="lg"
             >
               Soumettre le Formulaire
             </Button>
           </div>
         </div>
-      </main>
-
-      {/* Spacer for fixed footer */}
-      <div className="h-20"></div>
+      </div>
 
       {/* View Form Dialog */}
       <Dialog open={!!viewingForm} onOpenChange={(open) => !open && setViewingForm(null)}>
@@ -1075,89 +1103,26 @@ export default function ReceptionFerraillePage() {
               )}
             </div>
           </DialogHeader>
-          <ScrollArea className="h-[700px]">
+          <ScrollArea className="h-[calc(90vh-150px)]">
             {viewingForm && (
               <div className="space-y-6">
-                {/* Header Info */}
+                {/* Project Information */}
                 <Card>
                   <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle>{viewingForm.ficheNumber}</CardTitle>
-                        <CardDescription>
-                          {viewingForm.project || 'Sans nom'} - {viewingForm.company || 'Sans entreprise'}
-                        </CardDescription>
-                      </div>
-                      <Badge variant={
-                        viewingForm.status === 'accepté' ? 'default' :
-                        viewingForm.status === 'refusé' ? 'destructive' :
-                        viewingForm.status === 'soumis' ? 'secondary' : 'outline'
-                      }>
-                        {viewingForm.status}
-                      </Badge>
-                    </div>
+                    <CardTitle>Informations du Projet</CardTitle>
                   </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div>
-                        <p className="text-sm font-semibold">Maître d'Oeuvre</p>
-                        <p className="text-slate-600">{viewingForm.client || '-'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">Bureau d'Étude</p>
-                        <p className="text-slate-600">{viewingForm.bureauEtude || '-'}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Location Details */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Localisation</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-sm font-semibold">Bloc / Zone</p>
-                        <p className="text-slate-600">{viewingForm.block || '-'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">Niveau / Étage</p>
-                        <p className="text-slate-600">{viewingForm.level || '-'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">Localisation (Axes)</p>
-                        <p className="text-slate-600">{viewingForm.location || '-'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">Type d'Élément</p>
-                        <p className="text-slate-600">{viewingForm.elementType || '-'}</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Reception Details */}
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Détails de Réception</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-3 gap-4">
-                      <div>
-                        <p className="text-sm font-semibold">Date</p>
-                        <p className="text-slate-600">{viewingForm.receptionDate || '-'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">Heure</p>
-                        <p className="text-slate-600">{viewingForm.receptionTime || '-'}</p>
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold">Conditions Météo</p>
-                        <p className="text-slate-600">{viewingForm.weather || '-'}</p>
-                      </div>
-                    </div>
+                  <CardContent className="space-y-2">
+                    <p><strong>N° Fiche:</strong> {viewingForm.ficheNumber}</p>
+                    <p><strong>Projet:</strong> {viewingForm.project}</p>
+                    <p><strong>Entreprise:</strong> {viewingForm.company}</p>
+                    <p><strong>Maître d'œuvre:</strong> {viewingForm.client}</p>
+                    <p><strong>Bureau d'étude:</strong> {viewingForm.bureauEtude}</p>
+                    <p><strong>Bloc:</strong> {viewingForm.block}</p>
+                    <p><strong>Niveau:</strong> {viewingForm.level}</p>
+                    <p><strong>Localisation:</strong> {viewingForm.location}</p>
+                    <p><strong>Date:</strong> {viewingForm.receptionDate}</p>
+                    <p><strong>Heure:</strong> {viewingForm.receptionTime}</p>
+                    <p><strong>Météo:</strong> {viewingForm.weather}</p>
                   </CardContent>
                 </Card>
 
@@ -1170,44 +1135,15 @@ export default function ReceptionFerraillePage() {
                     <CardContent>
                       <div className="space-y-3">
                         {viewingForm.verifications.map((v: any, idx: number) => (
-                          <div key={idx} className="flex items-start justify-between p-3 border rounded">
-                            <div className="flex-1">
-                              <p className="font-medium">{v.criteria}</p>
-                              {v.observations && (
-                                <p className="text-sm text-slate-600 mt-1">{v.observations}</p>
-                              )}
+                          <div key={idx} className="border-b pb-2 last:border-0">
+                            <p className="font-medium">{v.criteria}</p>
+                            <div className="flex gap-4 mt-1">
+                              {v.isCompliant && <span className="text-green-500">✓ Conforme</span>}
+                              {v.isNonCompliant && <span className="text-red-500">✗ Non Conforme</span>}
+                              {v.isNotApplicable && <span className="text-slate-500">N/A</span>}
+                              {v.observations && <p className="text-sm text-slate-600 mt-1">{v.observations}</p>}
                             </div>
-                            <Badge variant={
-                              v.isCompliant ? 'default' :
-                              v.isNonCompliant ? 'destructive' :
-                              v.isNotApplicable ? 'outline' : 'outline'
-                            }>
-                              {v.isCompliant ? 'Conforme' :
-                               v.isNonCompliant ? 'Non Conforme' :
-                               v.isNotApplicable ? 'N/A' : '-'}
-                            </Badge>
                           </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Photos */}
-                {viewingForm.photos && viewingForm.photos.length > 0 && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Photos</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 gap-4">
-                        {viewingForm.photos.map((photo: any, idx: number) => (
-                          <img
-                            key={idx}
-                            src={photo.path}
-                            alt={`Photo ${idx + 1}`}
-                            className="w-full h-48 object-cover rounded"
-                          />
                         ))}
                       </div>
                     </CardContent>
@@ -1221,48 +1157,17 @@ export default function ReceptionFerraillePage() {
                       <CardTitle>Signatures</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="grid grid-cols-2 gap-4">
-                        {viewingForm.signatures.map((sig: any, idx: number) => (
-                          <div key={idx} className="p-3 border rounded">
-                            <p className="font-semibold">{sig.role}</p>
-                            <p className="text-sm">{sig.name || '-'}</p>
-                            <p className="text-xs text-slate-600">{sig.function || ''}</p>
-                            <p className="text-xs text-slate-500">
-                              {sig.date || '-'} {sig.time || ''}
-                            </p>
+                      <div className="space-y-4">
+                        {viewingForm.signatures.map((s: any, idx: number) => (
+                          <div key={idx} className="border-b pb-3 last:border-0">
+                            <p className="font-medium">{s.role}</p>
+                            <p><strong>Nom:</strong> {s.name}</p>
+                            <p><strong>Fonction:</strong> {s.function}</p>
+                            <p><strong>Date:</strong> {s.date}</p>
+                            <p><strong>Heure:</strong> {s.time}</p>
                           </div>
                         ))}
                       </div>
-                    </CardContent>
-                  </Card>
-                )}
-
-                {/* Follow-up Action */}
-                {viewingForm.followUpAction && (
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Suites à Donner</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="font-medium">{viewingForm.followUpAction}</p>
-                      {viewingForm.observations && (
-                        <div className="mt-4">
-                          <p className="text-sm font-semibold mb-2">Observations</p>
-                          <p className="text-slate-600">{viewingForm.observations}</p>
-                        </div>
-                      )}
-                      {(viewingForm.reservationDeadline || viewingForm.reservationResponsible) && (
-                        <div className="mt-4 grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-sm font-semibold">Délai de levée des réserves</p>
-                            <p className="text-slate-600">{viewingForm.reservationDeadline || '-'}</p>
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold">Responsable</p>
-                            <p className="text-slate-600">{viewingForm.reservationResponsible || '-'}</p>
-                          </div>
-                        </div>
-                      )}
                     </CardContent>
                   </Card>
                 )}
