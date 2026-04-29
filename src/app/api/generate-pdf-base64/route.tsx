@@ -9,14 +9,13 @@ async function generatePDF(data: any) {
 }
 
 export async function POST(request: NextRequest) {
-  console.log('=== Generate PDF API called ===')
+  console.log('=== Generate PDF Base64 API called ===')
 
   try {
     const body = await request.json()
     const { data } = body
 
     console.log('Generating PDF for fiche:', data.ficheNumber)
-    console.log('Photos in data:', data.photos)
 
     // Convert photo paths to base64 for PDF
     const photosArray = data.photos || []
@@ -26,32 +25,25 @@ export async function POST(request: NextRequest) {
       photosArray.map(async (photo: any) => {
         if (!photo) return null
 
-        // Handle both string paths and object with path property
         const photoPath = typeof photo === 'string' ? photo : photo.path
 
         if (!photoPath) {
-          console.log('Skipping photo with no path')
           return null
         }
 
         // If it's already a data URL, return as is
         if (photoPath.startsWith('data:')) {
-          console.log('Photo already in base64 format')
           return photoPath
         }
 
-        // Otherwise, read the file and convert to base64
+        // Otherwise, read file and convert to base64
         try {
-          // Extract filename from path like "/api/files/photo-name-123456789.jpg"
           const filename = photoPath.split('/').pop()
           const fullPath = `/home/z/my-project/upload/${filename}`
-
-          console.log('Reading photo from:', fullPath)
 
           const imageBuffer = await readFile(fullPath)
           const base64 = imageBuffer.toString('base64')
 
-          // Determine mime type
           const ext = filename?.split('.').pop()?.toLowerCase()
           const mimeTypes: Record<string, string> = {
             jpg: 'image/jpeg',
@@ -61,8 +53,6 @@ export async function POST(request: NextRequest) {
             webp: 'image/webp',
           }
           const mimeType = mimeTypes[ext || ''] || 'image/jpeg'
-
-          console.log('Converted photo to base64:', mimeType, 'size:', base64.length)
 
           return `data:${mimeType};base64,${base64}`
         } catch (error) {
@@ -77,32 +67,20 @@ export async function POST(request: NextRequest) {
       photos: processedPhotos,
     }
 
-    console.log('Generating PDF with', processedPhotos.filter(p => p !== null).length, 'photos')
-
     // Generate PDF
     const buffer = await generatePDF(dataWithBase64Photos)
+    const base64 = buffer.toString('base64')
 
-    console.log('PDF generated successfully, size:', buffer.length, 'bytes')
+    console.log('PDF generated successfully as base64, size:', base64.length)
 
-    // Create filename with proper encoding
-    const filename = `Fiche_Reception_${data.ficheNumber || 'download'}.pdf`
-    const encodedFilename = encodeURIComponent(filename)
-
-    // Use inline to display in browser instead of download
-    return new NextResponse(buffer, {
-      headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `inline; filename="${filename}"; filename*=UTF-8''${encodedFilename}`,
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache',
-        'Expires': '0',
-      },
+    return NextResponse.json({
+      success: true,
+      data: `data:application/pdf;base64,${base64}`,
+      filename: `Fiche_Reception_${data.ficheNumber || 'download'}.pdf`
     })
   } catch (error) {
-    console.error('=== Error generating PDF ===')
+    console.error('=== Error generating PDF Base64 ===')
     console.error('Error:', error)
-    console.error('Error message:', error instanceof Error ? error.message : String(error))
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack')
 
     return NextResponse.json(
       {

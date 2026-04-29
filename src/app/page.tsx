@@ -187,9 +187,12 @@ export default function ReceptionFerraillePage() {
         signatures
       }
 
-      // Generate and download PDF directly (no database storage)
+      // Generate PDF and open directly in Chrome browser
       try {
-        const pdfResponse = await fetch('/api/generate-pdf', {
+        toast.loading('Génération du PDF en cours...', { id: 'pdf-loading' })
+
+        // Use base64 API for better mobile compatibility
+        const pdfResponse = await fetch('/api/generate-pdf-base64', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -198,62 +201,24 @@ export default function ReceptionFerraillePage() {
         })
 
         if (pdfResponse.ok) {
-          const blob = await pdfResponse.blob()
+          const result = await pdfResponse.json()
 
-          // Try multiple download methods for mobile compatibility
-          const filename = `Fiche_Reception_${formData.ficheNumber}.pdf`
+          if (result.success && result.data) {
+            // Open PDF data URL directly - this will open in Chrome
+            window.open(result.data, '_blank', 'noopener,noreferrer')
 
-          // Method 1: Try to open in new tab (works best for mobile/webview)
-          try {
-            const url = window.URL.createObjectURL(blob)
-            const newWindow = window.open(url, '_blank')
-
-            if (newWindow) {
-              // If opened successfully, download will be handled by browser
-              toast.success('PDF ouvert dans un nouvel onglet!')
-              setTimeout(() => window.URL.revokeObjectURL(url), 1000)
-            } else {
-              // Method 2: Fallback to direct download
-              const link = document.createElement('a')
-              link.href = url
-              link.download = filename
-              link.style.display = 'none'
-              document.body.appendChild(link)
-              link.click()
-
-              setTimeout(() => {
-                window.URL.revokeObjectURL(url)
-                document.body.removeChild(link)
-              }, 1000)
-
-              toast.success('PDF téléchargé!')
-            }
-          } catch (error) {
-            console.error('Error opening PDF:', error)
-
-            // Method 3: Last resort - create and click link
-            const a = document.createElement('a')
-            a.style.display = 'none'
-            a.href = window.URL.createObjectURL(blob)
-            a.download = filename
-            document.body.appendChild(a)
-            a.click()
-
-            setTimeout(() => {
-              window.URL.revokeObjectURL(a.href)
-              document.body.removeChild(a)
-            }, 1000)
-
-            toast.success('PDF téléchargé!')
+            toast.success('PDF ouvert dans Chrome!', { id: 'pdf-loading' })
+          } else {
+            toast.error('Erreur lors de la génération du PDF', { id: 'pdf-loading' })
           }
         } else {
           const errorText = await pdfResponse.text()
           console.error('PDF generation error:', errorText)
-          toast.error('Erreur lors de la génération du PDF')
+          toast.error('Erreur lors de la génération du PDF', { id: 'pdf-loading' })
         }
       } catch (pdfError) {
         console.error('Error generating PDF:', pdfError)
-        toast.error('Erreur lors de la génération du PDF')
+        toast.error('Erreur lors de la génération du PDF', { id: 'pdf-loading' })
       }
 
       // Reset form
