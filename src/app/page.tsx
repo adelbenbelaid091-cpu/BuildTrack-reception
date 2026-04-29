@@ -199,21 +199,53 @@ export default function ReceptionFerraillePage() {
 
         if (pdfResponse.ok) {
           const blob = await pdfResponse.blob()
-          const url = window.URL.createObjectURL(blob)
-          const a = document.createElement('a')
-          a.style.display = 'none'
-          a.href = url
-          a.download = `Fiche_Reception_${formData.ficheNumber}.pdf`
-          document.body.appendChild(a)
-          a.click()
 
-          // Delay cleanup to ensure download starts
-          setTimeout(() => {
-            window.URL.revokeObjectURL(url)
-            document.body.removeChild(a)
-          }, 1000)
+          // Try multiple download methods for mobile compatibility
+          const filename = `Fiche_Reception_${formData.ficheNumber}.pdf`
 
-          toast.success('PDF généré avec succès!')
+          // Method 1: Try to open in new tab (works best for mobile/webview)
+          try {
+            const url = window.URL.createObjectURL(blob)
+            const newWindow = window.open(url, '_blank')
+
+            if (newWindow) {
+              // If opened successfully, download will be handled by browser
+              toast.success('PDF ouvert dans un nouvel onglet!')
+              setTimeout(() => window.URL.revokeObjectURL(url), 1000)
+            } else {
+              // Method 2: Fallback to direct download
+              const link = document.createElement('a')
+              link.href = url
+              link.download = filename
+              link.style.display = 'none'
+              document.body.appendChild(link)
+              link.click()
+
+              setTimeout(() => {
+                window.URL.revokeObjectURL(url)
+                document.body.removeChild(link)
+              }, 1000)
+
+              toast.success('PDF téléchargé!')
+            }
+          } catch (error) {
+            console.error('Error opening PDF:', error)
+
+            // Method 3: Last resort - create and click link
+            const a = document.createElement('a')
+            a.style.display = 'none'
+            a.href = window.URL.createObjectURL(blob)
+            a.download = filename
+            document.body.appendChild(a)
+            a.click()
+
+            setTimeout(() => {
+              window.URL.revokeObjectURL(a.href)
+              document.body.removeChild(a)
+            }, 1000)
+
+            toast.success('PDF téléchargé!')
+          }
         } else {
           const errorText = await pdfResponse.text()
           console.error('PDF generation error:', errorText)
