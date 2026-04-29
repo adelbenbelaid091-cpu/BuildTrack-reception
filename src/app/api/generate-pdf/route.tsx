@@ -84,10 +84,17 @@ export async function POST(request: NextRequest) {
 
     console.log('PDF generated successfully, size:', buffer.length, 'bytes')
 
+    // Create filename with proper encoding
+    const filename = `Fiche_Reception_${data.ficheNumber || 'download'}.pdf`
+    const encodedFilename = encodeURIComponent(filename)
+
     return new NextResponse(buffer, {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="Fiche_Reception_${data.ficheNumber || 'download'}.pdf"`,
+        'Content-Disposition': `attachment; filename="${filename}"; filename*=UTF-8''${encodedFilename}`,
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
       },
     })
   } catch (error) {

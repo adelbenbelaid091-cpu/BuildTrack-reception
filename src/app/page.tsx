@@ -206,10 +206,17 @@ export default function ReceptionFerraillePage() {
           a.download = `Fiche_Reception_${formData.ficheNumber}.pdf`
           document.body.appendChild(a)
           a.click()
-          window.URL.revokeObjectURL(url)
-          document.body.removeChild(a)
+
+          // Delay cleanup to ensure download starts
+          setTimeout(() => {
+            window.URL.revokeObjectURL(url)
+            document.body.removeChild(a)
+          }, 1000)
+
           toast.success('PDF généré avec succès!')
         } else {
+          const errorText = await pdfResponse.text()
+          console.error('PDF generation error:', errorText)
           toast.error('Erreur lors de la génération du PDF')
         }
       } catch (pdfError) {
