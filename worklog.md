@@ -498,3 +498,52 @@ Stage Summary:
 - Mobile compatible download mechanism
 - Clean implementation - temporary elements only
 - Changes deployed to GitHub
+---
+Task ID: 14
+Agent: Z.ai Code
+Task: Fix PDF download for WebView - show in modal with iframe
+
+Work Log:
+- Identified root cause: WebView on mobile blocks all direct downloads
+- Implemented PDF modal solution instead of direct download
+- Added new state variables:
+  * showPDFModal: controls PDF modal visibility
+  * pdfData: stores base64 PDF data
+  * pdfFilename: stores PDF filename
+- Modified handleSubmit:
+  * Removed direct download attempt
+  * Stores PDF data in state
+  * Opens PDF modal instead of downloading
+- Created PDF Modal Dialog:
+  * Full-screen modal with iframe to display PDF
+  * Uses base64 data URL as iframe src
+  * Header with "Aperçu du PDF" title
+  * Two action buttons: Télécharger and Fermer
+  * Télécharger button tries direct download as fallback
+  * Responsive button labels (Télécharger/Tél. and Fermer)
+  * Loading state shows spinner while PDF loads
+- Technical implementation:
+  * iframe src: base64 PDF data URL
+  * Modal max-height: 90vh for mobile
+  * Download button uses base64 data URL for download
+  * Works within WebView restrictions
+- User flow:
+  1. User fills form and clicks "Soumettre"
+  2. PDF is generated and shown in modal with iframe
+  3. User can view PDF in the modal
+  4. User can click "Télécharger" to attempt download
+  5. User closes modal to return to form
+  6. Form resets automatically
+- Verified ESLint compliance - all checks pass
+- Committed: "Show PDF in modal with iframe for WebView mobile compatibility"
+- Pushed to GitHub successfully
+
+Stage Summary:
+- PDF now displays in modal instead of direct download
+- WebView compatible solution - no download restrictions
+- Users can view PDF within the app
+- Download button available for users who want to save
+- Clean modal with loading states
+- Mobile responsive design
+- Code quality maintained with ESLint compliance
+- Changes deployed to GitHub
