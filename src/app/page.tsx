@@ -59,6 +59,9 @@ export default function ReceptionFerraillePage() {
   const [formsList, setFormsList] = useState<any[]>([])
   const [viewingForm, setViewingForm] = useState<any>(null)
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+  const [showPDFModal, setShowPDFModal] = useState(false)
+  const [pdfData, setPdfData] = useState<string>('')
+  const [pdfFilename, setPdfFilename] = useState<string>('')
   const [formData, setFormData] = useState({
     ficheNumber: '',
     project: '',
@@ -187,7 +190,7 @@ export default function ReceptionFerraillePage() {
         signatures
       }
 
-      // Generate PDF and download directly to phone (NO database storage)
+      // Generate PDF and show in modal (for WebView mobile apps)
       try {
         toast.loading('Génération du PDF en cours...', { id: 'pdf-loading' })
 
@@ -204,20 +207,12 @@ export default function ReceptionFerraillePage() {
           const result = await pdfResponse.json()
 
           if (result.success && result.data) {
-            // Create download link for mobile
-            const link = document.createElement('a')
-            link.href = result.data
-            link.download = result.filename || `Fiche_Reception_${formData.ficheNumber}.pdf`
-            link.style.display = 'none'
-            document.body.appendChild(link)
-            link.click()
+            // Store PDF data and show in modal
+            setPdfData(result.data)
+            setPdfFilename(result.filename || `Fiche_Reception_${formData.ficheNumber}.pdf`)
+            setShowPDFModal(true)
 
-            // Remove link after download starts
-            setTimeout(() => {
-              document.body.removeChild(link)
-            }, 500)
-
-            toast.success('PDF téléchargé!', { id: 'pdf-loading' })
+            toast.success('PDF généré!', { id: 'pdf-loading' })
           } else {
             toast.error('Erreur lors de la génération du PDF', { id: 'pdf-loading' })
           }
@@ -992,6 +987,59 @@ export default function ReceptionFerraillePage() {
           </div>
         </div>
       </div>
+
+      {/* PDF Modal - Shows PDF in iframe for WebView compatibility */}
+      <Dialog open={showPDFModal} onOpenChange={setShowPDFModal}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+          <DialogHeader className="px-6 pt-6 pb-4 border-b">
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-lg font-semibold">Aperçu du PDF</DialogTitle>
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => {
+                    // Try to download PDF
+                    if (pdfData) {
+                      const link = document.createElement('a')
+                      link.href = pdfData
+                      link.download = pdfFilename
+                      document.body.appendChild(link)
+                      link.click()
+                      setTimeout(() => document.body.removeChild(link), 100)
+                    }
+                  }}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  <span className="hidden sm:inline">Télécharger</span>
+                  <span className="sm:hidden">Tél.</span>
+                </Button>
+                <Button
+                  onClick={() => setShowPDFModal(false)}
+                  variant="outline"
+                  size="sm"
+                >
+                  Fermer
+                </Button>
+              </div>
+            </div>
+          </DialogHeader>
+          <div className="h-[calc(90vh-140px)] w-full bg-slate-100 dark:bg-slate-900">
+            {pdfData ? (
+              <iframe
+                src={pdfData}
+                className="w-full h-full border-0"
+                title="PDF Preview"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full">
+                <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* View Form Dialog */}
       <Dialog open={!!viewingForm} onOpenChange={(open) => !open && setViewingForm(null)}>
