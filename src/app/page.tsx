@@ -275,63 +275,27 @@ export default function ReceptionFerraillePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-950 dark:to-slate-900 flex flex-col pb-[180px] md:pb-0">
       {/* Header */}
-      <header className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
+      <header className="bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 shadow-sm sticky top-0 z-40">
+        <div className="container mx-auto px-3 md:px-4 py-3 md:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2.5 rounded-lg shadow-lg shadow-orange-500/20">
-                <FileText className="w-6 h-6 text-white" />
+            <div className="flex items-center space-x-2 md:space-x-3">
+              <div className="bg-gradient-to-br from-orange-500 to-orange-600 p-2 md:p-2.5 rounded-lg shadow-lg shadow-orange-500/20">
+                <FileText className="w-5 h-5 md:w-6 md:h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-lg md:text-xl font-semibold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
+                <h1 className="text-base md:text-lg md:text-xl font-semibold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
                   Fichier de Réception Ferraillages
                 </h1>
-                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">
+                <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 font-medium tracking-wide">
                   Contrôle Qualité
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3">
               <ThemeToggle />
-              <Dialog open={showFormsList} onOpenChange={setShowFormsList}>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="default">
-                    <List className="w-4 h-4 mr-2" />
-                    Mes Formulaires
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[80vh]">
-                  <DialogHeader>
-                    <DialogTitle>Mes Formulaires de Réception</DialogTitle>
-                  </DialogHeader>
-                  <ScrollArea className="h-[600px]">
-                    <div className="space-y-4">
-                      {formsList.length === 0 ? (
-                        <p className="text-center text-slate-500 py-8">
-                          Aucun formulaire trouvé
-                        </p>
-                      ) : (
-                        formsList.map((form) => (
-                          <Card key={form.id} className="p-4">
-                            <div className="flex items-start justify-between gap-4">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-2">
-                                  <Badge>{form.ficheNumber}</Badge>
-                                </div>
-                                <h3 className="font-semibold">{form.project || 'Sans nom'}</h3>
-                                <p className="text-sm text-slate-600">{form.company || 'Sans entreprise'}</p>
-                              </div>
-                            </div>
-                          </Card>
-                        ))
-                      )}
-                    </div>
-                  </ScrollArea>
-                </DialogContent>
-              </Dialog>
-              <Badge variant="outline" className="text-lg px-4 py-2">
+              <Badge variant="outline" className="text-sm md:text-lg px-2 md:px-4 py-1 md:py-2">
                 {formData.ficheNumber || 'En attente'}
               </Badge>
             </div>
@@ -340,30 +304,30 @@ export default function ReceptionFerraillePage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 container mx-auto px-4 py-8">
-        <ScrollArea className="h-[calc(100vh-350px)]">
+      <main className="flex-1 container mx-auto px-3 md:px-4 py-4 md:py-8">
+        <ScrollArea className="h-[calc(100vh-300px)] md:h-[calc(100vh-250px)]">
           {activeTab === 'general' && (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {/* General Information */}
               <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Building className="w-5 h-5" />
+                <CardHeader className="pb-4 md:pb-6">
+                  <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                    <Building className="w-4 h-4 md:w-5 md:h-5" />
                     Informations du Projet
                   </CardTitle>
-                  <CardDescription>Détails du projet et identification</CardDescription>
+                  <CardDescription className="text-xs md:text-sm">Détails du projet et identification</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <CardContent className="space-y-3 md:space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="ficheNumber">N° FICHE *</Label>
+                        <Label htmlFor="ficheNumber" className="text-sm md:text-base">N° FICHE *</Label>
                         <Button
                           type="button"
                           variant="ghost"
                           size="sm"
                           onClick={generateFicheNumber}
-                          className="text-xs"
+                          className="text-xs h-8 px-2"
                         >
                           Générer
                         </Button>
@@ -373,44 +337,49 @@ export default function ReceptionFerraillePage() {
                         value={formData.ficheNumber}
                         onChange={(e) => handleInputChange('ficheNumber', e.target.value)}
                         placeholder="FR-YYYYMMDD-XXXX"
+                        className="h-10 md:h-10"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="project">PROJET</Label>
+                      <Label htmlFor="project" className="text-sm md:text-base">PROJET</Label>
                       <Input
                         id="project"
                         value={formData.project}
                         onChange={(e) => handleInputChange('project', e.target.value)}
                         placeholder="Nom du projet"
+                        className="h-10 md:h-10"
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="company">ENTREPRISE</Label>
+                      <Label htmlFor="company" className="text-sm md:text-base">ENTREPRISE</Label>
                       <Input
                         id="company"
                         value={formData.company}
                         onChange={(e) => handleInputChange('company', e.target.value)}
                         placeholder="Nom de l'entreprise"
+                        className="h-10 md:h-10"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="client">MAÎTRE D'OUVRAGE</Label>
+                      <Label htmlFor="client" className="text-sm md:text-base">MAÎTRE D'OUVRAGE</Label>
                       <Input
                         id="client"
                         value={formData.client}
                         onChange={(e) => handleInputChange('client', e.target.value)}
                         placeholder="Maître d'œuvre"
+                        className="h-10 md:h-10"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="bureauEtude">BUREAU D'ÉTUDE</Label>
+                      <Label htmlFor="bureauEtude" className="text-sm md:text-base">BUREAU D'ÉTUDE</Label>
                       <Input
                         id="bureauEtude"
                         value={formData.bureauEtude}
                         onChange={(e) => handleInputChange('bureauEtude', e.target.value)}
                         placeholder="Bureau d'étude"
+                        className="h-10 md:h-10"
                       />
                     </div>
                   </div>
@@ -523,62 +492,67 @@ export default function ReceptionFerraillePage() {
           )}
 
           {activeTab === 'verifications' && (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <Card>
-                <CardHeader>
-                  <CardTitle>Vérifications de Conformité</CardTitle>
-                  <CardDescription>Contrôle des critères d'acceptation</CardDescription>
+                <CardHeader className="pb-4 md:pb-6">
+                  <CardTitle className="text-base md:text-lg">Vérifications de Conformité</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">Contrôle des critères d'acceptation</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
+                  <div className="space-y-4 md:space-y-6">
                     {verifications.map((item, index) => (
-                      <div key={index} className="space-y-3 p-4 border rounded-lg">
-                        <div className="flex items-start justify-between gap-4">
-                          <Label className="font-medium text-base">{item.criteria}</Label>
-                          <div className="flex items-center gap-4">
-                            <div className="flex items-center space-x-2">
+                      <div key={index} className="space-y-3 p-3 md:p-4 border rounded-lg">
+                        <div className="flex items-start justify-between gap-2 md:gap-4">
+                          <Label className="font-medium text-sm md:text-base flex-1">{item.criteria}</Label>
+                          <div className="flex items-center gap-2 md:gap-4">
+                            <div className="flex items-center space-x-1 md:space-x-2">
                               <Checkbox
                                 id={`compliant-${index}`}
                                 checked={item.isCompliant}
                                 onCheckedChange={(checked) =>
                                   handleVerificationChange(index, 'isCompliant', checked as boolean)
                                 }
+                                className="w-5 h-5"
                               />
                               <Label
                                 htmlFor={`compliant-${index}`}
-                                className="flex items-center gap-1 cursor-pointer text-sm"
+                                className="flex items-center gap-1 cursor-pointer text-xs md:text-sm"
                               >
-                                <CheckCircle className="w-4 h-4 text-green-500" />
-                                Conforme
+                                <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-green-500" />
+                                <span className="hidden sm:inline">Conforme</span>
+                                <span className="sm:hidden">Conf.</span>
                               </Label>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-1 md:space-x-2">
                               <Checkbox
                                 id={`noncompliant-${index}`}
                                 checked={item.isNonCompliant}
                                 onCheckedChange={(checked) =>
                                   handleVerificationChange(index, 'isNonCompliant', checked as boolean)
                                 }
+                                className="w-5 h-5"
                               />
                               <Label
                                 htmlFor={`noncompliant-${index}`}
-                                className="flex items-center gap-1 cursor-pointer text-sm"
+                                className="flex items-center gap-1 cursor-pointer text-xs md:text-sm"
                               >
-                                <XCircle className="w-4 h-4 text-red-500" />
-                                Non Conforme
+                                <XCircle className="w-3 h-3 md:w-4 md:h-4 text-red-500" />
+                                <span className="hidden sm:inline">Non Conf.</span>
+                                <span className="sm:hidden">N.C.</span>
                               </Label>
                             </div>
-                            <div className="flex items-center space-x-2">
+                            <div className="flex items-center space-x-1 md:space-x-2">
                               <Checkbox
                                 id={`notapplicable-${index}`}
                                 checked={item.isNotApplicable}
                                 onCheckedChange={(checked) =>
                                   handleVerificationChange(index, 'isNotApplicable', checked as boolean)
                                 }
+                                className="w-5 h-5"
                               />
                               <Label
                                 htmlFor={`notapplicable-${index}`}
-                                className="flex items-center gap-1 cursor-pointer text-sm"
+                                className="flex items-center gap-1 cursor-pointer text-xs md:text-sm"
                               >
                                 N/A
                               </Label>
@@ -818,52 +792,56 @@ export default function ReceptionFerraillePage() {
           )}
 
           {activeTab === 'signatures' && (
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               <Card>
-                <CardHeader>
-                  <CardTitle>Signatures</CardTitle>
-                  <CardDescription>Validation par les parties prenantes</CardDescription>
+                <CardHeader className="pb-4 md:pb-6">
+                  <CardTitle className="text-base md:text-lg">Signatures</CardTitle>
+                  <CardDescription className="text-xs md:text-sm">Validation par les parties prenantes</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
+                  <div className="space-y-4 md:space-y-6">
                     {signatures.map((sig, index) => (
-                      <div key={index} className="p-4 border rounded-lg space-y-4">
-                        <h3 className="font-semibold text-lg">{sig.role}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div key={index} className="p-3 md:p-4 border rounded-lg space-y-3 md:space-y-4">
+                        <h3 className="font-semibold text-sm md:text-lg">{sig.role}</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                           <div className="space-y-2">
-                            <Label htmlFor={`sig-name-${index}`}>Nom</Label>
+                            <Label htmlFor={`sig-name-${index}`} className="text-sm md:text-base">Nom</Label>
                             <Input
                               id={`sig-name-${index}`}
                               value={sig.name}
                               onChange={(e) => handleSignatureChange(index, 'name', e.target.value)}
                               placeholder="Nom complet"
+                              className="h-10 md:h-10"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor={`sig-function-${index}`}>Fonction</Label>
+                            <Label htmlFor={`sig-function-${index}`} className="text-sm md:text-base">Fonction</Label>
                             <Input
                               id={`sig-function-${index}`}
                               value={sig.function}
                               onChange={(e) => handleSignatureChange(index, 'function', e.target.value)}
                               placeholder="Fonction"
+                              className="h-10 md:h-10"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor={`sig-date-${index}`}>Date</Label>
+                            <Label htmlFor={`sig-date-${index}`} className="text-sm md:text-base">Date</Label>
                             <Input
                               id={`sig-date-${index}`}
                               type="date"
                               value={sig.date}
                               onChange={(e) => handleSignatureChange(index, 'date', e.target.value)}
+                              className="h-10 md:h-10"
                             />
                           </div>
                           <div className="space-y-2">
-                            <Label htmlFor={`sig-time-${index}`}>Heure</Label>
+                            <Label htmlFor={`sig-time-${index}`} className="text-sm md:text-base">Heure</Label>
                             <Input
                               id={`sig-time-${index}`}
                               type="time"
                               value={sig.time}
                               onChange={(e) => handleSignatureChange(index, 'time', e.target.value)}
+                              className="h-10 md:h-10"
                             />
                           </div>
                         </div>
@@ -879,39 +857,55 @@ export default function ReceptionFerraillePage() {
 
       {/* Fixed Bottom Tabs */}
       <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 shadow-lg z-50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-2 md:px-4">
           {/* Tabs Navigation */}
           <Tabs defaultValue="general" value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 h-16 bg-transparent border-0">
-              <TabsTrigger 
+            <TabsList className="grid w-full grid-cols-4 h-14 md:h-16 bg-transparent border-0">
+              <TabsTrigger
                 value="general"
-                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200"
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200 text-xs md:text-sm font-medium"
               >
-                Général
+                <div className="flex flex-col items-center gap-1">
+                  <FileText className="w-4 h-4 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Général</span>
+                  <span className="sm:hidden">Général</span>
+                </div>
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="verifications"
-                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200"
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200 text-xs md:text-sm font-medium"
               >
-                Vérifications
+                <div className="flex flex-col items-center gap-1">
+                  <CheckCircle className="w-4 h-4 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Vérifications</span>
+                  <span className="sm:hidden">Vérif.</span>
+                </div>
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="documents"
-                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200"
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200 text-xs md:text-sm font-medium"
               >
-                Documents
+                <div className="flex flex-col items-center gap-1">
+                  <Camera className="w-4 h-4 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Documents</span>
+                  <span className="sm:hidden">Docs</span>
+                </div>
               </TabsTrigger>
-              <TabsTrigger 
+              <TabsTrigger
                 value="signatures"
-                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200"
+                className="data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:font-semibold transition-all duration-200 text-xs md:text-sm font-medium"
               >
-                Signatures
+                <div className="flex flex-col items-center gap-1">
+                  <FileText className="w-4 h-4 md:w-4 md:h-4" />
+                  <span className="hidden sm:inline">Signatures</span>
+                  <span className="sm:hidden">Sign.</span>
+                </div>
               </TabsTrigger>
             </TabsList>
           </Tabs>
 
           {/* Action Buttons */}
-          <div className="flex items-center gap-4 border-t border-slate-200 dark:border-slate-800 pt-4 mt-4">
+          <div className="flex items-center gap-2 md:gap-4 border-t border-slate-200 dark:border-slate-800 pt-3 md:pt-4 mt-3 md:mt-4">
             <Button
               onClick={() => {
                 setFormData({
@@ -956,22 +950,29 @@ export default function ReceptionFerraillePage() {
                 })))
               }}
               variant="outline"
+              size="sm"
+              className="flex-1 md:flex-none h-10 md:h-10 text-xs md:text-sm"
             >
-              Réinitialiser
+              <span className="hidden sm:inline">Réinitialiser</span>
+              <span className="sm:hidden">Réinit.</span>
             </Button>
             <Button
               onClick={handleSubmit}
               disabled={isGeneratingPDF}
-              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold"
-              size="lg"
+              className="bg-orange-500 hover:bg-orange-600 text-white font-semibold flex-[2] md:flex-none h-10 md:h-10"
+              size="sm"
             >
               {isGeneratingPDF ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Génération en cours...
+                  <Loader2 className="w-4 h-4 mr-1 md:mr-2 animate-spin" />
+                  <span className="hidden sm:inline">Génération...</span>
+                  <span className="sm:hidden">Gén...</span>
                 </>
               ) : (
-                'Soumettre le Formulaire'
+                <>
+                  <span className="hidden sm:inline">Soumettre</span>
+                  <span className="sm:hidden">Soumettre</span>
+                </>
               )}
             </Button>
           </div>
