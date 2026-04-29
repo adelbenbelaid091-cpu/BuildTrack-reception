@@ -187,11 +187,11 @@ export default function ReceptionFerraillePage() {
         signatures
       }
 
-      // Generate PDF and open directly in Chrome browser
+      // Generate PDF and download directly to phone (NO database storage)
       try {
         toast.loading('Génération du PDF en cours...', { id: 'pdf-loading' })
 
-        // Use base64 API for better mobile compatibility
+        // Use base64 API for mobile compatibility
         const pdfResponse = await fetch('/api/generate-pdf-base64', {
           method: 'POST',
           headers: {
@@ -204,10 +204,20 @@ export default function ReceptionFerraillePage() {
           const result = await pdfResponse.json()
 
           if (result.success && result.data) {
-            // Open PDF data URL directly - this will open in Chrome
-            window.open(result.data, '_blank', 'noopener,noreferrer')
+            // Create download link for mobile
+            const link = document.createElement('a')
+            link.href = result.data
+            link.download = result.filename || `Fiche_Reception_${formData.ficheNumber}.pdf`
+            link.style.display = 'none'
+            document.body.appendChild(link)
+            link.click()
 
-            toast.success('PDF ouvert dans Chrome!', { id: 'pdf-loading' })
+            // Remove link after download starts
+            setTimeout(() => {
+              document.body.removeChild(link)
+            }, 500)
+
+            toast.success('PDF téléchargé!', { id: 'pdf-loading' })
           } else {
             toast.error('Erreur lors de la génération du PDF', { id: 'pdf-loading' })
           }
