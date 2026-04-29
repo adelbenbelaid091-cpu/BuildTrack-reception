@@ -63,6 +63,7 @@ export default function ReceptionFerraillePage() {
   const [pdfData, setPdfData] = useState<string>('')
   const [pdfFilename, setPdfFilename] = useState<string>('')
   const [pdfBlob, setPdfBlob] = useState<Blob | null>(null)
+  const [uploadingPhotoIndex, setUploadingPhotoIndex] = useState<number | null>(null)
   const [formData, setFormData] = useState({
     ficheNumber: '',
     project: '',
@@ -144,37 +145,68 @@ export default function ReceptionFerraillePage() {
     const file = e.target.files?.[0]
     if (file) {
       try {
+        setUploadingPhotoIndex(index)
+
         // Check file size
         const maxSize = 10 * 1024 * 1024 // 10MB
         if (file.size > maxSize) {
           toast.error('Fichier trop grand (max 10MB)')
+          setUploadingPhotoIndex(null)
           return
         }
 
-        toast.loading('Téléchargement en cours...', { id: `upload-${index}` })
+        // Convert to base64
+        const reader = new FileReader()
+        reader.onload = async (event) => {
+          try {
+            const base64 = event.target?.result as string
+            
+            // First try: Server upload
+            const formData = new FormData()
+            formData.append('file', file)
 
-        const formData = new FormData()
-        formData.append('file', file)
+            const response = await fetch('/api/upload', {
+              method: 'POST',
+              body: formData,
+            })
 
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
+            const result = await response.json()
 
-        const result = await response.json()
-
-        if (result.success) {
-          // Store the server path of the uploaded photo
-          const newPhotos = [...photos]
-          newPhotos[index] = `/api/files/${result.data.filename}`
-          setPhotos(newPhotos)
-          toast.success('Photo ajoutée avec succès!', { id: `upload-${index}` })
-        } else {
-          toast.error(result.error || 'Erreur lors du téléchargement', { id: `upload-${index}` })
+            if (result.success) {
+              // Store the server path of the uploaded photo
+              const newPhotos = [...photos]
+              newPhotos[index] = `/api/files/${result.data.filename}`
+              setPhotos(newPhotos)
+              toast.success('Photo ajoutée avec succès!')
+            } else {
+              // Fallback: Use base64 directly
+              const newPhotos = [...photos]
+              newPhotos[index] = base64
+              setPhotos(newPhotos)
+              toast.warning('Sauvegardée localement (erreur serveur)')
+              console.log('Upload result:', result)
+            }
+          } catch (error) {
+            console.error('Error uploading photo:', error)
+            // Fallback: Use base64 directly
+            const base64 = event.target?.result as string
+            const newPhotos = [...photos]
+            newPhotos[index] = base64
+            setPhotos(newPhotos)
+            toast.warning('Sauvegardée localement (erreur connexion)')
+          } finally {
+            setUploadingPhotoIndex(null)
+          }
         }
+        reader.onerror = () => {
+          toast.error('Erreur de lecture du fichier')
+          setUploadingPhotoIndex(null)
+        }
+        reader.readAsDataURL(file)
       } catch (error) {
-        console.error('Error uploading photo:', error)
-        toast.error('Erreur de connexion. Vérifiez votre internet.', { id: `upload-${index}` })
+        console.error('Error processing file:', error)
+        toast.error('Erreur lors du traitement de la photo')
+        setUploadingPhotoIndex(null)
       }
     }
   }
@@ -795,6 +827,13 @@ export default function ReceptionFerraillePage() {
                                 >
                                   <Trash2 className="w-4 h-4" />
                                 </Button>
+                              </div>
+                            ) : uploadingPhotoIndex === index ? (
+                              <div className="flex items-center justify-center w-full h-full">
+                                <div className="flex flex-col items-center space-y-2">
+                                  <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+                                  <span className="text-sm text-slate-500">Chargement...</span>
+                                </div>
                               </div>
                             ) : (
                               <div className="flex items-center justify-center w-full h-full">

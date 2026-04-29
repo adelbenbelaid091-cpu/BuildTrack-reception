@@ -350,11 +350,19 @@ export default function ReceptionFormPDF({ data }: ReceptionFormPDFProps) {
                 if (!photo) return null
                 // Handle both string paths and object with path property
                 const photoPath = typeof photo === 'string' ? photo : photo.path
+                // Handle base64 images and server paths
+                const imageSource = photoPath.startsWith('data:') 
+                  ? photoPath 
+                  : photoPath.startsWith('http') 
+                    ? photoPath
+                    : typeof window !== 'undefined'
+                      ? `${window.location.origin}${photoPath}`
+                      : `http://localhost:3000${photoPath}`
                 return (
                   <View key={index} style={styles.photoItem}>
                     {/* eslint-disable-next-line jsx-a11y/alt-text */}
                     <Image
-                      src={photoPath.startsWith('data:') ? photoPath : `http://localhost:3000${photoPath}`}
+                      src={imageSource}
                       style={styles.photo}
                     />
                   </View>

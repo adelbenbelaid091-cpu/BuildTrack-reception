@@ -19,20 +19,29 @@ export async function POST(request: NextRequest) {
 
     // Convert photo paths to base64 for PDF
     const photosArray = data.photos || []
-    console.log('Processing', photosArray.length, 'photos')
+    console.log('=== Processing Photos ===')
+    console.log('Number of photos:', photosArray.length)
+    console.log('Photos array:', photosArray)
 
     const processedPhotos = await Promise.all(
-      photosArray.map(async (photo: any) => {
-        if (!photo) return null
+      photosArray.map(async (photo: any, index: number) => {
+        console.log(`Processing photo ${index}:`, photo)
+        
+        if (!photo) {
+          console.log(`Photo ${index}: is null/undefined`)
+          return null
+        }
 
         const photoPath = typeof photo === 'string' ? photo : photo.path
 
         if (!photoPath) {
+          console.log(`Photo ${index}: no path`)
           return null
         }
 
         // If it's already a data URL, return as is
         if (photoPath.startsWith('data:')) {
+          console.log(`Photo ${index}: is base64 data URL`)
           return photoPath
         }
 
@@ -40,8 +49,11 @@ export async function POST(request: NextRequest) {
         try {
           const filename = photoPath.split('/').pop()
           const fullPath = `/home/z/my-project/upload/${filename}`
+          console.log(`Photo ${index}: reading from path:`, fullPath)
 
           const imageBuffer = await readFile(fullPath)
+          console.log(`Photo ${index}: file read, size:`, imageBuffer.length)
+          
           const base64 = imageBuffer.toString('base64')
 
           const ext = filename?.split('.').pop()?.toLowerCase()
@@ -54,9 +66,11 @@ export async function POST(request: NextRequest) {
           }
           const mimeType = mimeTypes[ext || ''] || 'image/jpeg'
 
-          return `data:${mimeType};base64,${base64}`
+          const result = `data:${mimeType};base64,${base64}`
+          console.log(`Photo ${index}: converted to base64, first 50 chars:`, result.substring(0, 50))
+          return result
         } catch (error) {
-          console.error('Error reading photo file:', photoPath, error)
+          console.error(`Error reading photo file ${index}:`, photoPath, error)
           return null
         }
       })
