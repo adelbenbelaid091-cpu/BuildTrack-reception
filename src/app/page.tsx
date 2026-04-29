@@ -988,55 +988,139 @@ export default function ReceptionFerraillePage() {
         </div>
       </div>
 
-      {/* PDF Modal - Shows PDF in iframe for WebView compatibility */}
+      {/* PDF Modal - Shows PDF with multiple download options */}
       <Dialog open={showPDFModal} onOpenChange={setShowPDFModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+        <DialogContent className="max-w-2xl max-h-[90vh] p-0">
           <DialogHeader className="px-6 pt-6 pb-4 border-b">
             <div className="flex items-center justify-between">
-              <DialogTitle className="text-lg font-semibold">Aperçu du PDF</DialogTitle>
-              <div className="flex gap-2">
+              <DialogTitle className="text-lg font-semibold">Votre PDF est prêt!</DialogTitle>
+              <Button
+                onClick={() => setShowPDFModal(false)}
+                variant="ghost"
+                size="sm"
+              >
+                ✕
+              </Button>
+            </div>
+          </DialogHeader>
+          <div className="p-6 space-y-4">
+            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+              <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
+                <strong>⚠️ Note:</strong> Le téléchargement automatique est limité dans cette application. Veuillez utiliser les options ci-dessous.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium">Choisissez une option:</p>
+
+              <div className="space-y-2">
+                {/* Option 1: Try direct download */}
                 <Button
                   onClick={() => {
-                    // Try to download PDF
                     if (pdfData) {
-                      const link = document.createElement('a')
-                      link.href = pdfData
-                      link.download = pdfFilename
-                      document.body.appendChild(link)
-                      link.click()
-                      setTimeout(() => document.body.removeChild(link), 100)
+                      try {
+                        // Method 1: Blob download
+                        const byteCharacters = atob(pdfData.split(',')[1])
+                        const byteNumbers = new Array(byteCharacters.length)
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                          byteNumbers[i] = byteCharacters.charCodeAt(i)
+                        }
+                        const byteArray = new Uint8Array(byteNumbers)
+                        const blob = new Blob([byteArray], { type: 'application/pdf' })
+
+                        // Try to download
+                        const link = document.createElement('a')
+                        link.href = window.URL.createObjectURL(blob)
+                        link.download = pdfFilename
+                        document.body.appendChild(link)
+                        link.click()
+                        setTimeout(() => {
+                          window.URL.revokeObjectURL(link.href)
+                          document.body.removeChild(link)
+                        }, 100)
+
+                        toast.success('Téléchargement lancé! Vérifiez vos téléchargements.')
+                      } catch (error) {
+                        toast.error('Téléchargement échoué. Essayez l\'option 2.')
+                      }
                     }
                   }}
                   variant="outline"
-                  size="sm"
-                  className="flex items-center gap-2"
+                  className="w-full justify-start"
+                  size="lg"
                 >
-                  <Download className="w-4 h-4" />
-                  <span className="hidden sm:inline">Télécharger</span>
-                  <span className="sm:hidden">Tél.</span>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded">
+                      <Download className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold">Option 1: Téléchargement direct</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">Essayez d'abord cette option</div>
+                    </div>
+                  </div>
                 </Button>
+
+                {/* Option 2: Open in new tab/window */}
                 <Button
-                  onClick={() => setShowPDFModal(false)}
+                  onClick={() => {
+                    if (pdfData) {
+                      const newWindow = window.open(pdfData, '_blank', 'noopener,noreferrer')
+                      if (newWindow) {
+                        toast.success('PDF ouvert dans un nouvel onglet!')
+                      } else {
+                        toast.error('Impossible d\'ouvrir. Essayez l\'option 3.')
+                      }
+                    }
+                  }}
                   variant="outline"
-                  size="sm"
+                  className="w-full justify-start"
+                  size="lg"
                 >
-                  Fermer
+                  <div className="flex items-center gap-3">
+                    <div className="bg-green-100 dark:bg-green-900 p-2 rounded">
+                      <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold">Option 2: Ouvrir dans le navigateur</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">Ouvre PDF dans une nouvelle fenêtre</div>
+                    </div>
+                  </div>
+                </Button>
+
+                {/* Option 3: Copy to clipboard (last resort) */}
+                <Button
+                  onClick={() => {
+                    if (pdfData) {
+                      try {
+                        navigator.clipboard.writeText(pdfData)
+                        toast.success('Copié! Collez dans une nouvelle fenêtre du navigateur.')
+                      } catch (error) {
+                        toast.error('Copie échouée')
+                      }
+                    }
+                  }}
+                  variant="outline"
+                  className="w-full justify-start"
+                  size="lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded">
+                      <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold">Option 3: Copier le PDF</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">Copiez et collez dans un nouveau navigateur</div>
+                    </div>
+                  </div>
                 </Button>
               </div>
             </div>
-          </DialogHeader>
-          <div className="h-[calc(90vh-140px)] w-full bg-slate-100 dark:bg-slate-900">
-            {pdfData ? (
-              <iframe
-                src={pdfData}
-                className="w-full h-full border-0"
-                title="PDF Preview"
-              />
-            ) : (
-              <div className="flex items-center justify-center h-full">
-                <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
-              </div>
-            )}
+
+            <div className="border-t pt-4">
+              <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+                💡 Astuce: Si aucune option ne fonctionne, essayez d'ouvrir l'application dans un navigateur externe (Chrome/Safari) pour un meilleur téléchargement.
+              </p>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
