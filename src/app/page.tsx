@@ -187,96 +187,77 @@ export default function ReceptionFerraillePage() {
         signatures
       }
 
-      // Save to database first
-      const response = await fetch('/api/reception-forms', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(fullFormData),
-      })
+      // Generate and download PDF directly (no database storage)
+      try {
+        const pdfResponse = await fetch('/api/generate-pdf', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ data: fullFormData }),
+        })
 
-      const result = await response.json()
-
-      if (result.success) {
-        toast.success('Formulaire soumis avec succès!')
-
-        // Generate and download PDF
-        try {
-          const pdfResponse = await fetch('/api/generate-pdf', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ data: fullFormData }),
-          })
-
-          if (pdfResponse.ok) {
-            const blob = await pdfResponse.blob()
-            const url = window.URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.style.display = 'none'
-            a.href = url
-            a.download = `Fiche_Reception_${formData.ficheNumber}.pdf`
-            document.body.appendChild(a)
-            a.click()
-            window.URL.revokeObjectURL(url)
-            document.body.removeChild(a)
-            toast.success('PDF généré avec succès!')
-          } else {
-            toast.error('Erreur lors de la génération du PDF')
-          }
-        } catch (pdfError) {
-          console.error('Error generating PDF:', pdfError)
+        if (pdfResponse.ok) {
+          const blob = await pdfResponse.blob()
+          const url = window.URL.createObjectURL(blob)
+          const a = document.createElement('a')
+          a.style.display = 'none'
+          a.href = url
+          a.download = `Fiche_Reception_${formData.ficheNumber}.pdf`
+          document.body.appendChild(a)
+          a.click()
+          window.URL.revokeObjectURL(url)
+          document.body.removeChild(a)
+          toast.success('PDF généré avec succès!')
+        } else {
           toast.error('Erreur lors de la génération du PDF')
         }
-
-        // Reset form
-        setFormData({
-          ficheNumber: '',
-          project: '',
-          company: '',
-          client: '',
-          bureauEtude: '',
-          block: '',
-          level: '',
-          location: '',
-          receptionDate: '',
-          receptionTime: '',
-          weather: '',
-          elementType: '',
-          elementTypeOther: '',
-          referencePlans: '',
-          borderau: '',
-          specifications: '',
-          planNumber: '',
-          planIndex: '',
-          observations: '',
-          reserves: '',
-          followUpAction: '',
-          reservationDeadline: '',
-          reservationResponsible: ''
-        })
-        setVerifications(verificationCriteria.map(criteria => ({
-          criteria,
-          isCompliant: false,
-          isNonCompliant: false,
-          isNotApplicable: false,
-          observations: ''
-        })))
-        setPhotos([])
-        setSignatures(signatureRoles.map(role => ({
-          role,
-          name: '',
-          function: '',
-          date: '',
-          time: ''
-        })))
-      } else {
-        const errorMessage = result.error || result.details || 'Erreur lors de la soumission'
-        console.error('Form submission error:', errorMessage)
-        toast.error(errorMessage)
+      } catch (pdfError) {
+        console.error('Error generating PDF:', pdfError)
+        toast.error('Erreur lors de la génération du PDF')
       }
+
+      // Reset form
+      setFormData({
+        ficheNumber: '',
+        project: '',
+        company: '',
+        client: '',
+        bureauEtude: '',
+        block: '',
+        level: '',
+        location: '',
+        receptionDate: '',
+        receptionTime: '',
+        weather: '',
+        elementType: '',
+        elementTypeOther: '',
+        referencePlans: '',
+        borderau: '',
+        specifications: '',
+        planNumber: '',
+        planIndex: '',
+        observations: '',
+        reserves: '',
+        followUpAction: '',
+        reservationDeadline: '',
+        reservationResponsible: ''
+      })
+      setVerifications(verificationCriteria.map(criteria => ({
+        criteria,
+        isCompliant: false,
+        isNonCompliant: false,
+        isNotApplicable: false,
+        observations: ''
+      })))
+      setPhotos([])
+      setSignatures(signatureRoles.map(role => ({
+        role,
+        name: '',
+        function: '',
+        date: '',
+        time: ''
+      })))
     } catch (error) {
       console.error('Error submitting form:', error)
       toast.error('Erreur lors de la soumission du formulaire')
