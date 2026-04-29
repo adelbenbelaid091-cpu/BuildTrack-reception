@@ -144,6 +144,15 @@ export default function ReceptionFerraillePage() {
     const file = e.target.files?.[0]
     if (file) {
       try {
+        // Check file size
+        const maxSize = 10 * 1024 * 1024 // 10MB
+        if (file.size > maxSize) {
+          toast.error('Fichier trop grand (max 10MB)')
+          return
+        }
+
+        toast.loading('Téléchargement en cours...', { id: `upload-${index}` })
+
         const formData = new FormData()
         formData.append('file', file)
 
@@ -159,13 +168,13 @@ export default function ReceptionFerraillePage() {
           const newPhotos = [...photos]
           newPhotos[index] = `/api/files/${result.data.filename}`
           setPhotos(newPhotos)
-          toast.success('Photo ajoutée avec succès!')
+          toast.success('Photo ajoutée avec succès!', { id: `upload-${index}` })
         } else {
-          toast.error(result.error || 'Erreur lors du téléchargement')
+          toast.error(result.error || 'Erreur lors du téléchargement', { id: `upload-${index}` })
         }
       } catch (error) {
         console.error('Error uploading photo:', error)
-        toast.error('Erreur lors du téléchargement de la photo')
+        toast.error('Erreur de connexion. Vérifiez votre internet.', { id: `upload-${index}` })
       }
     }
   }
@@ -795,11 +804,12 @@ export default function ReceptionFerraillePage() {
                                 >
                                   <Camera className="w-8 h-8 text-slate-400" />
                                   <span className="text-sm text-slate-500">Ajouter</span>
+                                  <span className="text-xs text-slate-400">JPG, PNG (max 10MB)</span>
                                 </Label>
                                 <Input
                                   id={`photo-${index}`}
                                   type="file"
-                                  accept="image/*"
+                                  accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
                                   className="hidden"
                                   onChange={(e) => handlePhotoUpload(index, e)}
                                 />
