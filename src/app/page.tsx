@@ -12,7 +12,7 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { FileText, Building, MapPin, Calendar, Clock, Cloud, Camera, CheckCircle, XCircle, List, Eye, Trash2, Download, Loader2, Moon, Sun } from 'lucide-react'
+import { FileText, Building, MapPin, Calendar, Clock, Cloud, Camera, CheckCircle, XCircle, List, Eye, Trash2, Download, Loader2, Moon, Sun, Share2, Printer } from 'lucide-react'
 import { toast } from 'sonner'
 import { ThemeToggle } from '@/components/theme-toggle'
 
@@ -62,6 +62,7 @@ export default function ReceptionFerraillePage() {
   const [showPDFModal, setShowPDFModal] = useState(false)
   const [pdfData, setPdfData] = useState<string>('')
   const [pdfFilename, setPdfFilename] = useState<string>('')
+  const [pdfBlob, setPdfBlob] = useState<Blob | null>(null)
   const [formData, setFormData] = useState({
     ficheNumber: '',
     project: '',
@@ -207,11 +208,25 @@ export default function ReceptionFerraillePage() {
           const result = await pdfResponse.json()
 
           if (result.success && result.data) {
-            // Store PDF data and show in modal
+            // Store PDF data and create blob for sharing
             setPdfData(result.data)
             setPdfFilename(result.filename || `Fiche_Reception_${formData.ficheNumber}.pdf`)
+            
+            // Create blob for Web Share API
+            try {
+              const byteCharacters = atob(result.data.split(',')[1])
+              const byteNumbers = new Array(byteCharacters.length)
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i)
+              }
+              const byteArray = new Uint8Array(byteNumbers)
+              const blob = new Blob([byteArray], { type: 'application/pdf' })
+              setPdfBlob(blob)
+            } catch (error) {
+              console.error('Error creating blob:', error)
+            }
+            
             setShowPDFModal(true)
-
             toast.success('PDF généré!', { id: 'pdf-loading' })
           } else {
             toast.error('Erreur lors de la génération du PDF', { id: 'pdf-loading' })
@@ -988,60 +1003,85 @@ export default function ReceptionFerraillePage() {
         </div>
       </div>
 
-      {/* PDF Modal - Shows PDF with multiple download options */}
+      {/* PDF Modal - Shows PDF with multiple download options for WebView */}
       <Dialog open={showPDFModal} onOpenChange={setShowPDFModal}>
-        <DialogContent className="max-w-2xl max-h-[90vh] p-0">
-          <DialogHeader className="px-6 pt-6 pb-4 border-b">
+        <DialogContent className="max-w-lg max-h-[90vh] p-0 overflow-y-auto">
+          <DialogHeader className="px-4 pt-4 pb-3 border-b">
             <div className="flex items-center justify-between">
-              <DialogTitle className="text-lg font-semibold">Votre PDF est prêt!</DialogTitle>
+              <DialogTitle className="text-base md:text-lg font-semibold">PDF prêt!</DialogTitle>
               <Button
                 onClick={() => setShowPDFModal(false)}
                 variant="ghost"
                 size="sm"
+                className="h-8 w-8 p-0"
               >
                 ✕
               </Button>
             </div>
           </DialogHeader>
-          <div className="p-6 space-y-4">
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <p className="text-sm text-blue-800 dark:text-blue-200 mb-3">
-                <strong>⚠️ Note:</strong> Le téléchargement automatique est limité dans cette application. Veuillez utiliser les options ci-dessous.
+          <div className="p-4 space-y-4">
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+              <p className="text-xs md:text-sm text-amber-800 dark:text-amber-200">
+                <strong>💾 Pour sauvegarder:</strong> Utilisez les options ci-dessous compatibles avec votre application.
               </p>
             </div>
 
             <div className="space-y-3">
-              <p className="text-sm font-medium">Choisissez une option:</p>
+              {/* Option 1: Web Share API (Best for WebView) */}
+              <Button
+                onClick={async () => {
+                  if (pdfBlob && 'share' in navigator) {
+                    try {
+                      const file = new File([pdfBlob], pdfFilename, { type: 'application/pdf' })
+                      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        await navigator.share({
+                          title: 'Fiche de Réception Ferraillages',
+                          text: `Fiche: ${pdfFilename}`,
+                          files: [file]
+                        })
+                        toast.success('PDF partagé avec succès!')
+                      } else {
+                        toast.error('Partage non supporté sur cet appareil')
+                      }
+                    } catch (error) {
+                      if ((error as Error).name !== 'AbortError') {
+                        toast.error('Erreur lors du partage')
+                      }
+                    }
+                  } else {
+                    toast.error('Partage non disponible. Essayez l\'option 2.')
+                  }
+                }}
+                variant="default"
+                  className="w-full justify-start bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
+                  size="lg"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="bg-white/20 p-2 rounded">
+                      <Share2 className="w-5 h-5" />
+                    </div>
+                    <div className="text-left">
+                      <div className="font-semibold text-sm md:text-base">Partager le PDF</div>
+                      <div className="text-xs opacity-90">Enregistrer via le menu partager</div>
+                    </div>
+                  </div>
+                </Button>
 
-              <div className="space-y-2">
-                {/* Option 1: Try direct download */}
+                {/* Option 2: Print to PDF */}
                 <Button
                   onClick={() => {
                     if (pdfData) {
-                      try {
-                        // Method 1: Blob download
-                        const byteCharacters = atob(pdfData.split(',')[1])
-                        const byteNumbers = new Array(byteCharacters.length)
-                        for (let i = 0; i < byteCharacters.length; i++) {
-                          byteNumbers[i] = byteCharacters.charCodeAt(i)
-                        }
-                        const byteArray = new Uint8Array(byteNumbers)
-                        const blob = new Blob([byteArray], { type: 'application/pdf' })
-
-                        // Try to download
-                        const link = document.createElement('a')
-                        link.href = window.URL.createObjectURL(blob)
-                        link.download = pdfFilename
-                        document.body.appendChild(link)
-                        link.click()
+                      const printWindow = window.open('', '_blank')
+                      if (printWindow) {
+                        printWindow.document.write(`<iframe src="${pdfData}" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>`)
+                        printWindow.document.close()
                         setTimeout(() => {
-                          window.URL.revokeObjectURL(link.href)
-                          document.body.removeChild(link)
-                        }, 100)
-
-                        toast.success('Téléchargement lancé! Vérifiez vos téléchargements.')
-                      } catch (error) {
-                        toast.error('Téléchargement échoué. Essayez l\'option 2.')
+                          printWindow.focus()
+                          printWindow.print()
+                        }, 500)
+                        toast.success('Fenêtre d\'impression ouverte')
+                      } else {
+                        toast.error('Impossible d\'ouvrir. Essayez l\'option 3.')
                       }
                     }
                   }}
@@ -1050,25 +1090,25 @@ export default function ReceptionFerraillePage() {
                   size="lg"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="bg-orange-100 dark:bg-orange-900 p-2 rounded">
-                      <Download className="w-5 h-5 text-orange-600 dark:text-orange-400" />
+                    <div className="bg-blue-100 dark:bg-blue-900 p-2 rounded">
+                      <Printer className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="text-left">
-                      <div className="font-semibold">Option 1: Téléchargement direct</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">Essayez d'abord cette option</div>
+                      <div className="font-semibold text-sm md:text-base">Imprimer / Enregistrer PDF</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">Ouvre le dialogue d\'impression</div>
                     </div>
                   </div>
                 </Button>
 
-                {/* Option 2: Open in new tab/window */}
+                {/* Option 3: Open in new tab */}
                 <Button
                   onClick={() => {
                     if (pdfData) {
                       const newWindow = window.open(pdfData, '_blank', 'noopener,noreferrer')
                       if (newWindow) {
-                        toast.success('PDF ouvert dans un nouvel onglet!')
+                        toast.success('PDF ouvert!')
                       } else {
-                        toast.error('Impossible d\'ouvrir. Essayez l\'option 3.')
+                        toast.error('Impossible d\'ouvrir. Essayez l\'option 4.')
                       }
                     }
                   }}
@@ -1081,21 +1121,29 @@ export default function ReceptionFerraillePage() {
                       <FileText className="w-5 h-5 text-green-600 dark:text-green-400" />
                     </div>
                     <div className="text-left">
-                      <div className="font-semibold">Option 2: Ouvrir dans le navigateur</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">Ouvre PDF dans une nouvelle fenêtre</div>
+                      <div className="font-semibold text-sm md:text-base">Ouvrir dans le navigateur</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">Nouvelle fenêtre avec PDF</div>
                     </div>
                   </div>
                 </Button>
 
-                {/* Option 3: Copy to clipboard (last resort) */}
+                {/* Option 4: Direct download (fallback) */}
                 <Button
                   onClick={() => {
-                    if (pdfData) {
+                    if (pdfBlob) {
                       try {
-                        navigator.clipboard.writeText(pdfData)
-                        toast.success('Copié! Collez dans une nouvelle fenêtre du navigateur.')
+                        const link = document.createElement('a')
+                        link.href = window.URL.createObjectURL(pdfBlob)
+                        link.download = pdfFilename
+                        document.body.appendChild(link)
+                        link.click()
+                        setTimeout(() => {
+                          window.URL.revokeObjectURL(link.href)
+                          document.body.removeChild(link)
+                        }, 100)
+                        toast.success('Téléchargement lancé!')
                       } catch (error) {
-                        toast.error('Copie échouée')
+                        toast.error('Téléchargement échoué')
                       }
                     }
                   }}
@@ -1105,20 +1153,19 @@ export default function ReceptionFerraillePage() {
                 >
                   <div className="flex items-center gap-3">
                     <div className="bg-purple-100 dark:bg-purple-900 p-2 rounded">
-                      <FileText className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                      <Download className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                     </div>
                     <div className="text-left">
-                      <div className="font-semibold">Option 3: Copier le PDF</div>
-                      <div className="text-xs text-slate-500 dark:text-slate-400">Copiez et collez dans un nouveau navigateur</div>
+                      <div className="font-semibold text-sm md:text-base">Téléchargement direct</div>
+                      <div className="text-xs text-slate-500 dark:text-slate-400">Peut être bloqué par WebView</div>
                     </div>
                   </div>
                 </Button>
               </div>
-            </div>
 
-            <div className="border-t pt-4">
-              <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
-                💡 Astuce: Si aucune option ne fonctionne, essayez d'ouvrir l'application dans un navigateur externe (Chrome/Safari) pour un meilleur téléchargement.
+            <div className="border-t pt-3">
+              <p className="text-[10px] md:text-xs text-slate-500 dark:text-slate-400 text-center">
+                👆 Option 1 recommandée pour WebView: Cliquez sur "Partager le PDF" puis choisissez "Enregistrer" ou "Télécharger"
               </p>
             </div>
           </div>
